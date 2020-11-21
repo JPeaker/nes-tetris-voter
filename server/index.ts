@@ -11,6 +11,5 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
 app.get('/hello', (_req, res) => {
-  // tslint:disable-next-line:no-console
   res.send('Hello you!');
 });
