@@ -5,7 +5,12 @@
   "proxy": "http://localhost:5000/",
   "type": "module",
   "dependencies": {
+    "@types/cors": "^2.8.8",
+    "@types/pg": "^7.14.7",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "nes-tetris-representation": "^1.4.5",
+    "pg": "^8.5.1",
     "react": "^16.8.2",
     "react-dom": "^16.8.2"
   },
