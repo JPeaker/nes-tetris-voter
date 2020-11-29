@@ -1,16 +1,22 @@
-import { ObjectType, Field, ID, Int } from 'type-graphql';
+import { ObjectType, Field, ID, Int, GraphQLISODateTime } from 'type-graphql';
+import { Entity, BaseEntity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity({ name: 'boards' })
 @ObjectType({ description: 'The Board model' })
-export class Board {
+export class Board extends BaseEntity {
     @Field(() => ID)
-    id!: string;
+    @PrimaryGeneratedColumn()
+    id!: number;
 
-    @Field()
+    @Field(() => GraphQLISODateTime)
+    @Column('timestamp with time zone', { default: () => 'CURRENT_TIMESTAMP' })
     createdAt!: Date;
 
-    @Field()
+    @Field(() => GraphQLISODateTime)
+    @Column('timestamp with time zone', { default: () => 'CURRENT_TIMESTAMP' })
     lastUpdatedAt!: Date;
 
     @Field(() => [[Int]])
+    @Column({ type: 'int', array: true })
     board!: number[][];
 }
