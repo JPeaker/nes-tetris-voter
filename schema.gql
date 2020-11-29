@@ -8,7 +8,6 @@ type Board {
   board: [[Int!]!]!
   createdAt: DateTime!
   id: ID!
-  lastUpdatedAt: DateTime!
 }
 
 input BoardInput {
@@ -22,6 +21,7 @@ scalar DateTime
 
 type Mutation {
   createBoard(board: BoardInput!): Board!
+  deleteBoard(id: Int!): Boolean!
 }
 
 type Query {
