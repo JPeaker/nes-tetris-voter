@@ -1,7 +1,6 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import { ConnectionOptions, createConnection } from 'typeorm';
-import { Board } from '../schema/Board';
 
 dotenv.config();
 
@@ -21,5 +20,20 @@ export const connection = createConnection({
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: [Board],
+  synchronize: true,
+  logging: true,
+  cli: {
+    entitiesDir: 'data/entity',
+    migrationsDir: 'data/migration',
+    subscribersDir: 'data/subscriber',
+  },
+  entities: [
+    'data/entity/**/*.ts'
+  ],
+ migrations: [
+    'data/migration/**/*.ts'
+ ],
+ subscribers: [
+    'data/subscriber/**/*.ts'
+ ],
 } as ConnectionOptions);

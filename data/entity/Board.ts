@@ -17,6 +17,6 @@ export class Board extends BaseEntity {
     lastUpdatedAt!: Date;
 
     @Field(() => [[Int]])
-    @Column({ type: 'int', array: true })
+    @Column({ type: 'int', array: true, nullable: false })
     board!: number[][];
 }

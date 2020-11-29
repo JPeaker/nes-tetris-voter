@@ -1,5 +1,5 @@
 import { Arg, Int, Mutation, Query, Resolver } from 'type-graphql';
-import { Board } from './Board';
+import { Board } from './entity/Board';
 import { BoardInput } from './BoardInput';
 
 @Resolver(() => Board)
@@ -15,9 +15,10 @@ export class BoardResolver {
   }
 
   @Mutation(() => Board)
-  createBoard(@Arg('board', () => BoardInput) board: BoardInput): Board {
-    const x = Board.create(board);
-    console.log(x);
-    return x;
+  async createBoard(@Arg('board', () => BoardInput) board: BoardInput): Promise<Board> {
+    const dbBoard = Board.create(board);
+    await Board.save([dbBoard]);
+
+    return dbBoard;
   }
 };

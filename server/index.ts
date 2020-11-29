@@ -2,10 +2,10 @@ import 'reflect-metadata';
 import bodyParser from 'body-parser';
 import express from 'express';
 import cors from 'cors';
-import { connection } from './config';
+import { connection } from '../data/config';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
-import { BoardResolver } from '../schema/BoardResolver';
+import { BoardResolver } from '../data/BoardResolver';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -32,13 +32,3 @@ main().catch(error => console.log(error));
 
 // tslint:disable-next-line:no-console
 app.listen(port, () => console.log(`Listening on port ${port}`));
-
-// app.route('/boards').get((_request, response) => {
-//   pool.query('SELECT * FROM boards', (error, results) => {
-//     if (error) {
-//       throw error;
-//     }
-
-//     response.status(200).json(results.rows);
-//   });
-// });
