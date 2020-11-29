@@ -7,12 +7,17 @@
   "dependencies": {
     "@types/cors": "^2.8.8",
     "@types/pg": "^7.14.7",
+    "apollo-server-express": "^2.19.0",
+    "class-validator": "^0.12.2",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
+    "graphql": "^15.4.0",
     "nes-tetris-representation": "^1.4.5",
     "pg": "^8.5.1",
     "react": "^16.8.2",
-    "react-dom": "^16.8.2"
+    "react-dom": "^16.8.2",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "^1.1.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.5.2",
@@ -34,7 +39,7 @@
     "prettier": "1.16.4",
     "react-scripts": "^2.1.5",
     "semantic-release": "^15.13.3",
-    "ts-node-dev": "^1.0.0-pre.32",
+    "ts-node-dev": "^1.0.0",
     "tslint": "^5.12.1",
     "tslint-config-prettier": "^1.18.0",
     "tslint-eslint-rules": "^5.4.0",
@@ -47,7 +52,7 @@
     "lint": "npm run lint:js && npm run lint:ts",
     "lint:js": "eslint --ext .js,.jsx --cache '**/*.{jsx,js}' --fix",
     "lint:ts": "tslint -c tslint.json -p tslint-tsconfig.json --fix",
-    "start:server": "cd server && ts-node-dev ./index.ts --respawn --transpileOnly && wait-on tcp:5000",
+    "start:server": "ts-node-dev ./server/index.ts --respawn --transpileOnly",
     "start:app": "react-scripts start",
     "start": "run-p --race start:server start:app",
     "build": "react-scripts build",
