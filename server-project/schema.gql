@@ -7,11 +7,22 @@
 type Board {
   board: [[Int!]!]!
   createdAt: DateTime!
+  currentPiece: Int!
   id: ID!
+  nextPiece: Int!
+  possibilities: [Possibility!]!
 }
 
 input BoardInput {
   board: [[Int!]!]!
+  currentPiece: Int!
+  nextPiece: Int!
+}
+
+"""Block Co-ordinate"""
+type Coordinate {
+  column: Int!
+  row: Int!
 }
 
 """
@@ -22,6 +33,12 @@ scalar DateTime
 type Mutation {
   createBoard(board: BoardInput!): Board!
   deleteBoard(id: Int!): Boolean!
+}
+
+"""Possible placements"""
+type Possibility {
+  blocks: [Coordinate!]!
+  id: ID!
 }
 
 type Query {

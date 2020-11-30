@@ -15,19 +15,20 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "noEmit": true,
     "experimentalDecorators": true,
-    "module": "es2015",
+    "module": "esnext",
     "strict": true
   },
   "include": [
     "src",
     "server"
   ],
+  "exclude": [
+    "node_modules"
+  ],
   "ts-node": {
-    // these options are overrides used only by ts-node
-    // same as our --compilerOptions flag and our TS_NODE_COMPILER_OPTIONS environment variable
     "compilerOptions": {
       "module": "commonjs"
     }
