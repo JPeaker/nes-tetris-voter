@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
-import { TetrisGrid, filledGrid } from 'nes-tetris-representation';
+import { filledGrid } from 'nes-tetris-representation';
+import { TetrisGrid } from 'nes-tetris-components';
 
 function App() {
   return (
