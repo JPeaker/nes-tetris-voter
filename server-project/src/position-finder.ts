@@ -11,15 +11,13 @@ type BoardPosition = {
 
 const canPieceMove = (position: BoardPosition, grid: Grid): boolean => {
   try {
-    return getPiece(position).blocks.every((block) => {
-      return (
-        block.row >= 0 &&
-        block.row < 22 &&
-        block.column >= 0 &&
-        block.column < 10 &&
-        (grid[block.row] && grid[block.row][block.column] === 0)
-      );
-    });
+    return getPiece(position).blocks.every(block => (
+      block.row >= 0 &&
+      block.row < 22 &&
+      block.column >= 0 &&
+      block.column < 10 &&
+      (grid[block.row] && grid[block.row][block.column] === 0)
+    ));
   } catch (e) {
     return false;
   }
@@ -117,7 +115,7 @@ export const findAllPossiblePositions = (position: Omit<ActivePiece, 'blocks'>, 
     });
   });
 
-  const blah = uniqBy(results, piece => piece.blocks.map(block => `${block.column},${block.row}`).join('.')).map(piece => {
+  return uniqBy(results, piece => piece.blocks.map(block => `${block.column},${block.row}`).join('.')).filter(piece => canPieceMove(piece, grid)).map(piece => {
     const possibility = new Possibility();
     possibility.piece = piece.type;
     possibility.block1X = piece.blocks[0].column;
@@ -128,9 +126,6 @@ export const findAllPossiblePositions = (position: Omit<ActivePiece, 'blocks'>, 
     possibility.block3Y = piece.blocks[2].row;
     possibility.block4X = piece.blocks[3].column;
     possibility.block4Y = piece.blocks[3].row;
-    console.log(possibility);
     return possibility;
   });
-  console.log(99999,blah[0]);
-  return blah;
 };

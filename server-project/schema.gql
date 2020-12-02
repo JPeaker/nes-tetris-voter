@@ -44,4 +44,5 @@ type Possibility {
 type Query {
   board(id: Int!): Board!
   boards: [Board!]!
+  randomBoard: Board!
 }

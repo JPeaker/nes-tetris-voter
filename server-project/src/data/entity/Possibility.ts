@@ -14,10 +14,10 @@ export class Possibility extends BaseEntity {
   @Field(() => [Coordinate])
   blocks() {
     return [
-      { row: this.block1X, column: this.block1Y },
-      { row: this.block2X, column: this.block2Y },
-      { row: this.block3X, column: this.block3Y },
-      { row: this.block4X, column: this.block4Y },
+      { row: this.block1Y, column: this.block1X },
+      { row: this.block2Y, column: this.block2X },
+      { row: this.block3Y, column: this.block3X },
+      { row: this.block4Y, column: this.block4X },
     ];
   }
 

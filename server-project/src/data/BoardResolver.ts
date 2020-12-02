@@ -13,6 +13,22 @@ export class BoardResolver {
   }
 
   @Query(() => Board)
+  async randomBoard(): Promise<Board | undefined> {
+    const slimBoard = await Board.getRepository().createQueryBuilder()
+      .select('boards.id')
+      .from(Board, 'boards')
+      .orderBy('RANDOM()')
+      .limit(1)
+      .getOne();
+
+    if (!slimBoard) {
+      return undefined;
+    }
+
+    return Board.findOne(slimBoard.id);
+  }
+
+  @Query(() => Board)
   async board(@Arg('id', () => Int) id: number): Promise<Board | undefined> {
     const found = await Board.findOne(id);
 

@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.2.9",
+    "@types/graphql": "^14.5.0",
+    "graphql": "^15.4.0",
     "nes-tetris-components": "^2.0.0",
     "nes-tetris-representation": "^2.0.0",
     "react": "^16.8.2",
@@ -31,7 +34,7 @@
     "lint:ts": "tslint -c tslint.json -p tslint-tsconfig.json --fix",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject",
     "prettier": "prettier --write '**/*.{tsx,ts,jsx,js,json}'"
   },

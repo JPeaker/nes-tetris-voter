@@ -9,6 +9,24 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+client.query({
+  query: gql`
+    query getBoards {
+      boards {
+        id,
+        board,
+        createdAt,
+        possibilities {
+          blocks {
+            row,
+            column
+          }
+        }
+      }
+    }
+  `,
+}).then(result => console.log(result));
+
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
