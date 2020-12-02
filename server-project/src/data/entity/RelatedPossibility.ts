@@ -16,6 +16,15 @@ export class RelatedPossibility extends BaseEntity {
   blocks() { return this.possibility.blocks() }
 
   @Field(() => Int)
+  row() { return this.possibility.row }
+
+  @Field(() => Int)
+  column() { return this.possibility.column }
+
+  @Field(() => Int)
+  orientation() { return this.possibility.orientation }
+
+  @Field(() => Int)
   distance() {
     const xDiff = Math.abs(this.possibility.column - 5);
     const yDiff = Math.abs(this.possibility.row - 2);

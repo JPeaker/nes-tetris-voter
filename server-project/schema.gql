@@ -44,6 +44,9 @@ type Query {
 """A possible placement of a piece in a specific scenario"""
 type RelatedPossibility {
   blocks: [Coordinate!]!
+  column: Int!
   distance: Int!
   id: ID!
+  orientation: Int!
+  row: Int!
 }

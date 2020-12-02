@@ -1,4 +1,4 @@
-import { Arg, Int, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { Board } from './entity/Board';
 import { BoardInput } from './BoardInput';
 import { findAllPossiblePositions } from '../position-finder';
@@ -8,6 +8,12 @@ import { Possibility } from './entity/Possibility';
 
 @Resolver(() => Board)
 export class BoardResolver {
+  @FieldResolver(() => [RelatedPossibility])
+  possibilities(@Root() board: Board) {
+    // Sort first top to bottom, then left to right
+    return board.possibilities.sort((p1, p2) => p2.row() > p1.row() ? -1 : p2.column() > p1.column() ? -1 : 1);
+  }
+
   @Query(() => [Board])
   async boards(): Promise<Board[]> {
     return await Board.find();
@@ -46,7 +52,11 @@ export class BoardResolver {
       throw new Error(`Invalid board format ${JSON.stringify(boardInput.board)}`);
     }
 
-    const existingBoard = await Board.findOne({ where: { board: boardInput.board } });
+    const existingBoard = await Board.findOne({ where: {
+      board: boardInput.board,
+      currentPiece: boardInput.currentPiece,
+      nextPiece: boardInput.nextPiece
+    } });
 
     if (existingBoard) {
       throw new Error(`Board exists with id: ${existingBoard.id}`);
