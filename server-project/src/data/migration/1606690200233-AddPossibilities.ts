@@ -1,4 +1,4 @@
-import { ActivePiece, ColumnIndex, getPiece, PieceList, RowIndex } from "nes-tetris-representation";
+import { ActivePiece, ColumnIndex, getPiece, Orientation, PieceList, RowIndex } from "nes-tetris-representation";
 import { MigrationInterface, QueryRunner } from "typeorm";
 import { Possibility } from '../entity/Possibility';
 
@@ -19,6 +19,9 @@ for (let column = 0; column < 10; column++) {
 
           const possibility = new Possibility();
           possibility.piece = piece.value;
+          possibility.column = column as ColumnIndex;
+          possibility.row = row as RowIndex;
+          possibility.orientation = orientation as Orientation;
           possibility.block1X = calculatedPiece.blocks[0].column;
           possibility.block1Y = calculatedPiece.blocks[0].row;
           possibility.block2X = calculatedPiece.blocks[1].column;

@@ -1,10 +1,10 @@
-import { Piece } from 'nes-tetris-representation';
+import { ColumnIndex, Orientation, Piece, RowIndex } from 'nes-tetris-representation';
 import { ObjectType, Field, ID, Int } from 'type-graphql';
 import { Entity, BaseEntity, Column, PrimaryGeneratedColumn, AfterLoad } from 'typeorm';
 import { Coordinate } from '../Coordinate';
 
 @Entity({ name: 'possibilities' })
-@ObjectType({ description: 'Possible placements' })
+@ObjectType({ description: 'Possible placements of a piece on the board. Unrelated to any specific scenario' })
 export class Possibility extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
@@ -21,8 +21,21 @@ export class Possibility extends BaseEntity {
     ];
   }
 
+  @Field(() => Piece)
   @Column('int')
   piece!: Piece;
+
+  @Field(() => Int)
+  @Column('int')
+  row!: RowIndex;
+
+  @Field(() => Int)
+  @Column('int')
+  column!: ColumnIndex;
+
+  @Field(() => Orientation)
+  @Column('int')
+  orientation!: Orientation;
 
   @Column('int')
   block1X!: number;

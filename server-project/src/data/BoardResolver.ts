@@ -3,6 +3,7 @@ import { Board } from './entity/Board';
 import { BoardInput } from './BoardInput';
 import { findAllPossiblePositions } from '../position-finder';
 import { Orientation } from 'nes-tetris-representation';
+import { RelatedPossibility } from './entity/RelatedPossibility';
 import { Possibility } from './entity/Possibility';
 
 @Resolver(() => Board)
@@ -51,20 +52,28 @@ export class BoardResolver {
       throw new Error(`Board exists with id: ${existingBoard.id}`);
     }
 
+    // Save the board
+    const dbBoard = Board.create(boardInput);
+    await dbBoard.save();
+
+    // Save all the related possibilities
     const possibilities = findAllPossiblePositions({
       type: boardInput.currentPiece,
       row: 2,
       column: 5,
       orientation: Orientation.Down,
     }, boardInput.board);
+    await Promise.all(possibilities.map(async possibility => {
+      const foundPossibility = await Possibility.findOne({ where: possibility });
 
-    const dbBoard = Board.create(boardInput);
-    dbBoard.possibilities = (await Promise.all(
-      possibilities.map(async possibility => await Possibility.findOne({ where: possibility }))
-    )).filter(possibility => !!possibility) as Possibility[];
-    await dbBoard.save();
+      return RelatedPossibility.create({
+        board: dbBoard,
+        possibility: foundPossibility!,
+      }).save();
+    }));
 
-    return dbBoard;
+    // Get the board again so we have all the possibilities
+    return (await Board.findOne(dbBoard.id))!;
   }
 
   @Mutation(() => Boolean)

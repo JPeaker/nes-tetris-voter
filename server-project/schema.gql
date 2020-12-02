@@ -10,7 +10,7 @@ type Board {
   currentPiece: Int!
   id: ID!
   nextPiece: Int!
-  possibilities: [Possibility!]!
+  possibilities: [RelatedPossibility!]!
 }
 
 input BoardInput {
@@ -35,14 +35,15 @@ type Mutation {
   deleteBoard(id: Int!): Boolean!
 }
 
-"""Possible placements"""
-type Possibility {
-  blocks: [Coordinate!]!
-  id: ID!
-}
-
 type Query {
   board(id: Int!): Board!
   boards: [Board!]!
   randomBoard: Board!
+}
+
+"""A possible placement of a piece in a specific scenario"""
+type RelatedPossibility {
+  blocks: [Coordinate!]!
+  distance: Int!
+  id: ID!
 }

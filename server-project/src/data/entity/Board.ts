@@ -1,7 +1,7 @@
 import { Grid, Piece } from 'nes-tetris-representation';
 import { ObjectType, Field, ID, Int, GraphQLISODateTime } from 'type-graphql';
-import { Entity, BaseEntity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
-import { Possibility } from './Possibility';
+import { Entity, BaseEntity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { RelatedPossibility } from './RelatedPossibility';
 
 @Entity({ name: 'boards' })
 @ObjectType({ description: 'The Board model' })
@@ -22,10 +22,9 @@ export class Board extends BaseEntity {
     @Column('int')
     nextPiece!: Piece;
 
-    @Field(() => [Possibility])
-    @ManyToMany(() => Possibility, { eager: true })
-    @JoinTable()
-    possibilities!: Possibility[];
+    @Field(() => [RelatedPossibility])
+    @OneToMany(() => RelatedPossibility, possibility => possibility.board, { eager: true })
+    possibilities!: RelatedPossibility[];
 
     @Field(() => [[Int]])
     @Column({ type: 'int', array: true, nullable: false })

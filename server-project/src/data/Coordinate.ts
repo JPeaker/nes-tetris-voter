@@ -1,8 +1,7 @@
-import { ObjectType, Field, ID, Int } from 'type-graphql';
-import { BaseEntity } from 'typeorm';
+import { ObjectType, Field, Int } from 'type-graphql';
 
 @ObjectType({ description: 'Block Co-ordinate' })
-export class Coordinate extends BaseEntity {
+export class Coordinate {
   @Field(() => Int)
   row!: number;
 
