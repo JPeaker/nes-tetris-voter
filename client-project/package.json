@@ -5,11 +5,13 @@
   "dependencies": {
     "@apollo/client": "^3.2.9",
     "@types/graphql": "^14.5.0",
+    "@types/react-router-dom": "^5.1.6",
     "graphql": "^15.4.0",
     "nes-tetris-components": "^2.0.0",
     "nes-tetris-representation": "^2.0.0",
     "react": "^16.8.2",
-    "react-dom": "^16.8.2"
+    "react-dom": "^16.8.2",
+    "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.5.2",

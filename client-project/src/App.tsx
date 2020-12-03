@@ -1,156 +1,43 @@
-import React, { useState } from 'react';
-import './App.css';
-import { ColumnIndex, getPiece, Grid, Orientation, Piece, RowIndex } from 'nes-tetris-representation';
-import { TetrisGrid } from 'nes-tetris-components';
-import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import _ from 'lodash';
-
-interface Possibility {
-  id: string;
-  blocks: { row: RowIndex; column: ColumnIndex }[];
-  votes: number;
-}
-
-interface Board {
-  id: string;
-  board: Grid;
-  currentPiece: Piece;
-  possibilities: Possibility[];
-}
-
-interface GetBoardsData {
-  boards: Board[];
-}
-
-interface RandomBoardData {
-  randomBoard: Board;
-}
-
-const GET_BOARDS_QUERY = gql`
-  query getBoards {
-    boards {
-      id,
-      board,
-      currentPiece,
-      createdAt,
-      possibilities {
-        id,
-        blocks {
-          row,
-          column
-        },
-        votes
-      }
-    }
-  }
-`;
-
-const GET_RANDOM_BOARD_QUERY = gql`
-  query getRandomBoard {
-    randomBoard {
-      id,
-      board,
-      currentPiece,
-      createdAt,
-      possibilities {
-        id,
-        blocks {
-          row,
-          column
-        },
-        votes
-      }
-    }
-  }
-`;
-
-const ADD_VOTE = gql`
-  mutation addVote($id: String!) {
-    addVote(id: $id) {
-      votes
-    }
-  }
-`;
-
-const REMOVE_VOTE = gql`
-  mutation removeVote($id: String!) {
-    removeVote(id: $id) {
-      votes
-    }
-  }
-`;
-
-interface VoteData {
-  votes: number;
-}
+import React from 'react';
+import VotePage from './VotePage';
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 
 function App() {
-  const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
-  const [selectedPossibility, setSelectedPossibility] = useState<Possibility | null>(null);
-  const { loading: getBoardsLoading, data: getBoardsData } = useQuery<GetBoardsData>(GET_BOARDS_QUERY);
-  const [initGetRandomBoard, { data: randomBoard, refetch: getRandomBoard }] = useLazyQuery<RandomBoardData>(GET_RANDOM_BOARD_QUERY);
-  const [addVote, { data: addedVote }] = useMutation<VoteData>(ADD_VOTE);
-  const [removeVote, { data: removedVote }] = useMutation<VoteData>(REMOVE_VOTE);
-
-  if (randomBoard && randomBoard.randomBoard && (selectedBoard ? selectedBoard.id !== randomBoard.randomBoard.id : true)) {
-    setSelectedBoard(randomBoard.randomBoard);
-    setSelectedPossibility(randomBoard.randomBoard.possibilities[0]);
-  }
-
-  if (getBoardsLoading) {
-    return <>Loading</>;
-  }
-
-  const updatedBoard = selectedBoard ? _.cloneDeep(selectedBoard.board) : null;
-
-  if (selectedBoard && updatedBoard) {
-    if (!selectedPossibility) {
-      setSelectedPossibility(selectedBoard.possibilities[0]);
-    }
-    const possibility = selectedPossibility || selectedBoard.possibilities[0];
-    const piece = getPiece({ row: 2, column: 5, type: selectedBoard.currentPiece, orientation: Orientation.Down });
-    possibility.blocks.forEach(({ row, column }) => updatedBoard[row][column] = piece.blocks[0].value);
-  }
-
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const id = event.currentTarget.value || null;
-    const possibility = selectedBoard && selectedBoard.possibilities.find(p => p.id === id);
-    setSelectedPossibility(possibility!);
-  };
-
-  const votes = removedVote ? removedVote.votes : addedVote ? addedVote.votes : selectedPossibility ? selectedPossibility.votes : null;
-
   return (
-    <div className="App">
-      <ul>
-        {
-          getBoardsData!.boards.map(board => <li key={board.id} onClick={() => setSelectedBoard(board)}>
-            <div>Id: {board.id}</div>
-          </li>)
-        }
-      </ul>
-      <button onClick={() => (getRandomBoard || initGetRandomBoard)()}>Randomize!</button>
-      { selectedBoard && updatedBoard ? <TetrisGrid beforeGrid={selectedBoard.board} grid={updatedBoard} /> : undefined }
-      {
-        selectedBoard ? (
-          <select defaultValue={selectedPossibility && selectedPossibility.id || undefined} onChange={onChange}>
-            { selectedBoard.possibilities.map(possibility =>
-              <option key={possibility.id} value={possibility.id}>
-                {possibility.blocks.map(block => `{${block.column},${block.row}}`).join(',')}
-              </option>)}
-          </select>
-        ) : undefined
-      }
-      {
-        selectedBoard ? (
-          <>
-            <div>Votes: {votes}</div>
-            <button onClick={() => addVote({ variables: { id: selectedPossibility && selectedPossibility.id }})}>Vote</button>
-            <button onClick={() => removeVote({ variables: { id: selectedPossibility && selectedPossibility.id }})}>Unvote</button>
-          </>
-        ) : undefined
-      }
-    </div>
+    <BrowserRouter>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul className="navbar-nav mr-auto">
+            <li className="nav-item active">
+              <Link className="nav-link" to="/vote">Vote</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/create">Create</Link>
+            </li>
+          </ul>
+          <form className="form-inline my-2 my-lg-0">
+            <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search by ID" />
+            <button className="btn btn-outline-success my-2 my-sm-0" type="submit">
+              <span className="oi oi-magnifying-glass" title="search" aria-hidden="true"></span>
+            </button>
+          </form>
+        </div>
+      </nav>
+      <Switch>
+        <Route path="/vote/:id">
+          <VotePage />
+        </Route>
+        <Route path={['/', '/vote']}>
+          <VotePage />
+        </Route>
+        <Route path="/create">
+          Create
+        </Route>
+      </Switch>
+    </BrowserRouter>
   );
 }
 
