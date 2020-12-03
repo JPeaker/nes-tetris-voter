@@ -20,23 +20,23 @@ export class BoardResolver {
   }
 
   @Query(() => Board)
-  async randomBoard(): Promise<Board | undefined> {
-    const slimBoard = await Board.getRepository().createQueryBuilder()
+  async board(@Arg('id', () => String, { nullable: true }) id?: string): Promise<Board | undefined> {
+    let adjustedId: string;
+    if (id === undefined) {
+      const slimBoard = await Board.getRepository().createQueryBuilder()
       .select('boards.id')
       .from(Board, 'boards')
       .orderBy('RANDOM()')
       .limit(1)
       .getOne();
 
-    if (!slimBoard) {
-      return undefined;
+      if (!slimBoard) {
+        return undefined;
+      }
+
+      adjustedId = slimBoard.id;
     }
 
-    return Board.findOne(slimBoard.id);
-  }
-
-  @Query(() => Board)
-  async board(@Arg('id', () => Int) id: string): Promise<Board | undefined> {
     const found = await Board.findOne(id);
 
     if (!found) {

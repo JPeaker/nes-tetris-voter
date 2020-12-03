@@ -2,6 +2,10 @@ import React from 'react';
 import { gql, useMutation } from '@apollo/client';
 import _ from 'lodash';
 import { Possibility } from './CommonModels';
+import possibilityDescriber from './possibility-describer';
+import { TetrisGrid } from 'nes-tetris-components';
+import { getPiece, Grid } from 'nes-tetris-representation';
+import LazyLoad from 'react-lazyload';
 
 const ADD_VOTE = gql`
   mutation addVote($id: String!) {
@@ -24,32 +28,27 @@ interface VoteData {
 }
 
 interface PossibilityListProps {
+  grid: Grid;
   possibilities: Possibility[];
   selected: Possibility;
   setSelected: (possibility: Possibility) => void;
 }
 
-function PossibilityList({ possibilities, selected, setSelected }: PossibilityListProps) {
-  const [addVote, { data: addedVote }] = useMutation<VoteData>(ADD_VOTE);
-  const [removeVote, { data: removedVote }] = useMutation<VoteData>(REMOVE_VOTE);
-
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const id = event.currentTarget.value || null;
-    const possibility = possibilities.find(p => p.id === id);
-    setSelected(possibility!);
-  };
+function PossibilityList({ grid, possibilities, selected, setSelected }: PossibilityListProps) {
+  const [addVote] = useMutation<VoteData>(ADD_VOTE);
+  const [removeVote] = useMutation<VoteData>(REMOVE_VOTE);
 
   return (
-    <div className="App">
-      <select defaultValue={selected.id} onChange={onChange}>
-        { possibilities.map(possibility =>
-          <option key={possibility.id} value={possibility.id}>
-            {possibility.blocks.map(block => `{${block.column},${block.row}}`).join(',')}
-          </option>)}
-      </select>
-      <button onClick={() => addVote({ variables: { id: selected.id }})}>Vote</button>
-      <button onClick={() => removeVote({ variables: { id: selected.id }})}>Unvote</button>
-    </div>
+    <ul className="list-group overflow-auto">
+      { possibilities.map((possibility, index) => (
+        <li className={`list-group-item ${selected.id === possibility.id ? 'active' : ''}`} onClick={() => setSelected(possibility)}>
+          <LazyLoad height={50} offset={200} unmountIfInvisible>
+            <TetrisGrid grid={grid} possiblePiece={getPiece({...possibility, type: possibility.piece})} blockSizeInRem={0.25} />
+          </LazyLoad>
+          { possibilityDescriber(possibility) }
+        </li>
+      ))}
+    </ul>
   );
 }
 

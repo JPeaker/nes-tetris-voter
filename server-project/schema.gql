@@ -38,10 +38,9 @@ type Mutation {
 }
 
 type Query {
-  board(id: Int!): Board!
+  board(id: String): Board!
   boards: [Board!]!
   possibility(id: String!): RelatedPossibility!
-  randomBoard: Board!
 }
 
 """A possible placement of a piece in a specific scenario"""
@@ -50,6 +49,7 @@ type RelatedPossibility {
   column: Int!
   id: ID!
   orientation: Int!
+  piece: Int!
   row: Int!
   votes: Int!
 }

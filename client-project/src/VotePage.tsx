@@ -17,7 +17,11 @@ const GET_BOARD_QUERY = gql`
           row,
           column
         },
-        votes
+        votes,
+        piece,
+        orientation,
+        row,
+        column,
       }
     }
   }

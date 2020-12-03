@@ -17,6 +17,7 @@ function VotePage({ board }: { board: Board }) {
   return (
     <div className="App">
       <PossibilityList
+        grid={board.board}
         possibilities={board.possibilities}
         selected={selectedPossibility}
         setSelected={setSelectedPossibility}
