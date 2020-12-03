@@ -25,7 +25,7 @@ export class RelatedPossibility extends BaseEntity {
   orientation() { return this.possibility.orientation }
 
   @Field(() => Int)
-  piece() { return this.possibility.piece }
+  type() { return this.possibility.type }
 
   @ManyToOne(() => Board, board => board.possibilities)
   board!: Board;

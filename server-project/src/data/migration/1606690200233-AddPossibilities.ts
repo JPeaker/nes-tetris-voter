@@ -18,7 +18,7 @@ for (let column = 0; column < 10; column++) {
           }
 
           const possibility = new Possibility();
-          possibility.piece = piece.value;
+          possibility.type = piece.value;
           possibility.column = column as ColumnIndex;
           possibility.row = row as RowIndex;
           possibility.orientation = orientation as Orientation;

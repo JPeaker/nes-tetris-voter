@@ -42,6 +42,26 @@ const spawnPositionIn: DetailMap = {
   [Piece.Z]: [],
 };
 
+const pointingRight: DetailMap = {
+  [Piece.I]: [],
+  [Piece.J]: [],
+  [Piece.L]: [],
+  [Piece.T]: [Orientation.Right],
+  [Piece.O]: [],
+  [Piece.S]: [],
+  [Piece.Z]: [],
+};
+
+const pointingLeft: DetailMap = {
+  [Piece.I]: [],
+  [Piece.J]: [],
+  [Piece.L]: [],
+  [Piece.T]: [Orientation.Left],
+  [Piece.O]: [],
+  [Piece.S]: [],
+  [Piece.Z]: [],
+};
+
 const upsideDownIn: DetailMap = {
   [Piece.I]: [],
   [Piece.J]: [Orientation.Right],
@@ -50,22 +70,24 @@ const upsideDownIn: DetailMap = {
   [Piece.O]: [],
   [Piece.S]: [],
   [Piece.Z]: [],
-}
+};
 
 const maps: { map: DetailMap, detail: string}[] = [
-  { map: flatIn, detail: 'flat in' },
-  { map: uprightIn, detail: 'upright in' },
-  { map: spawnPositionIn, detail: 'spawn position in' },
-  { map: upsideDownIn, detail: 'upside down in' },
+  { map: flatIn, detail: 'flat' },
+  { map: uprightIn, detail: 'upright' },
+  { map: pointingLeft, detail: 'pointing left' },
+  { map: pointingRight, detail: 'pointing right' },
+  { map: spawnPositionIn, detail: 'spawn position' },
+  { map: upsideDownIn, detail: 'upside down' },
 ];
 
 const describer = (possibility: Possibility): string => {
-  const columns = _.uniq(possibility.blocks.map(block => block.column + 1)).sort().join(',');
+  const columns = _.uniq(possibility.blocks.map(block => block.column + 1)).sort((c1, c2) => c1 - c2).join(',');
 
-  const appropriateMap = maps.find(({ map }) => map[possibility.piece].includes(possibility.orientation));
+  const appropriateMap = maps.find(({ map }) => map[possibility.type].includes(possibility.orientation));
   const detail = appropriateMap ? appropriateMap.detail : 'in';
 
-  return `${PieceList.find(({ value }) => value === possibility.piece)!.label} ${detail} ${columns}`;
+  return `${PieceList.find(({ value }) => value === possibility.type)!.label} ${detail} in ${columns}`;
 };
 
 export default describer;

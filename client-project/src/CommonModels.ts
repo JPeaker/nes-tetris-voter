@@ -4,7 +4,7 @@ export interface Possibility {
   id: string;
   blocks: { row: RowIndex; column: ColumnIndex }[];
   orientation: Orientation;
-  piece: Piece;
+  type: Piece;
   row: RowIndex;
   column: ColumnIndex;
   votes: number;

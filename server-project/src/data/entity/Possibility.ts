@@ -23,7 +23,7 @@ export class Possibility extends BaseEntity {
 
   @Field(() => Piece)
   @Column('int')
-  piece!: Piece;
+  type!: Piece;
 
   @Field(() => Int)
   @Column('int')

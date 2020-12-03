@@ -15,14 +15,20 @@ function VotePage({ board }: { board: Board }) {
   possibility.blocks.forEach(({ row, column }) => updatedBoard[row][column] = piece.blocks[0].value);
 
   return (
-    <div className="App">
-      <PossibilityList
-        grid={board.board}
-        possibilities={board.possibilities}
-        selected={selectedPossibility}
-        setSelected={setSelectedPossibility}
-      />
-      <TetrisGrid beforeGrid={board.board} grid={updatedBoard} />
+    <div className="container-fluid">
+      <div className="row align-items-center justify-content-center">
+        <div className="col">
+          <PossibilityList
+            grid={board.board}
+            possibilities={board.possibilities}
+            selected={selectedPossibility}
+            setSelected={setSelectedPossibility}
+          />
+        </div>
+        <div className="col">
+          <TetrisGrid beforeGrid={board.board} grid={updatedBoard} className="tetris-grid" />
+        </div>
+      </div>
     </div>
   );
 }

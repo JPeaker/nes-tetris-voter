@@ -1,11 +1,12 @@
 import React from 'react';
 import { gql, useMutation } from '@apollo/client';
 import _ from 'lodash';
+import LazyLoad from 'react-lazyload';
+import { getPiece, Grid } from 'nes-tetris-representation';
+import { TetrisGrid } from 'nes-tetris-components';
+import './PossibilityList.css';
 import { Possibility } from './CommonModels';
 import possibilityDescriber from './possibility-describer';
-import { TetrisGrid } from 'nes-tetris-components';
-import { getPiece, Grid } from 'nes-tetris-representation';
-import LazyLoad from 'react-lazyload';
 
 const ADD_VOTE = gql`
   mutation addVote($id: String!) {
@@ -39,13 +40,17 @@ function PossibilityList({ grid, possibilities, selected, setSelected }: Possibi
   const [removeVote] = useMutation<VoteData>(REMOVE_VOTE);
 
   return (
-    <ul className="list-group overflow-auto">
-      { possibilities.map((possibility, index) => (
+    <ul id="possibility-list" className="list-group overflow-auto possibility-list col-6 container">
+      { possibilities.map(possibility => (
         <li className={`list-group-item ${selected.id === possibility.id ? 'active' : ''}`} onClick={() => setSelected(possibility)}>
-          <LazyLoad height={50} offset={200} unmountIfInvisible>
-            <TetrisGrid grid={grid} possiblePiece={getPiece({...possibility, type: possibility.piece})} blockSizeInRem={0.25} />
-          </LazyLoad>
-          { possibilityDescriber(possibility) }
+          <div className="row-fluid">
+            <span className="col-3">
+              <LazyLoad offset={200} scrollContainer="#possibility-list" unmountIfInvisible>
+                  <TetrisGrid grid={grid} possiblePiece={getPiece(possibility)} blockSizeInRem={0.25} />
+              </LazyLoad>
+            </span>
+            <span>{ possibilityDescriber(possibility) }</span>
+          </div>
         </li>
       ))}
     </ul>

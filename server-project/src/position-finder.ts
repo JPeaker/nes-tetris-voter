@@ -117,7 +117,7 @@ export const findAllPossiblePositions = (position: Omit<ActivePiece, 'blocks'>, 
 
   return uniqBy(results, piece => piece.blocks.map(block => `${block.column},${block.row}`).join('.')).filter(piece => canPieceMove(piece, grid)).map(piece => {
     const possibility = new Possibility();
-    possibility.piece = piece.type;
+    possibility.type = piece.type;
     possibility.block1X = piece.blocks[0].column;
     possibility.block1Y = piece.blocks[0].row;
     possibility.block2X = piece.blocks[1].column;

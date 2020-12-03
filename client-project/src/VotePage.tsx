@@ -18,7 +18,7 @@ const GET_BOARD_QUERY = gql`
           column
         },
         votes,
-        piece,
+        type,
         orientation,
         row,
         column,
