@@ -8,7 +8,7 @@ import { Coordinate } from '../Coordinate';
 export class Possibility extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
-  id!: number;
+  id!: string;
 
   @AfterLoad()
   @Field(() => [Coordinate])

@@ -36,7 +36,7 @@ export class BoardResolver {
   }
 
   @Query(() => Board)
-  async board(@Arg('id', () => Int) id: number): Promise<Board | undefined> {
+  async board(@Arg('id', () => Int) id: string): Promise<Board | undefined> {
     const found = await Board.findOne(id);
 
     if (!found) {
@@ -87,7 +87,7 @@ export class BoardResolver {
   }
 
   @Mutation(() => Boolean)
-  async deleteBoard(@Arg('id', () => Int) id: number): Promise<boolean> {
+  async deleteBoard(@Arg('id', () => Int) id: string): Promise<boolean> {
     const existingBoard = await Board.findOne({ where: { id } });
 
     if (!existingBoard) {

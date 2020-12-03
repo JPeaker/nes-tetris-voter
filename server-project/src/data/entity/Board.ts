@@ -8,7 +8,7 @@ import { RelatedPossibility } from './RelatedPossibility';
 export class Board extends BaseEntity {
     @Field(() => ID)
     @PrimaryGeneratedColumn()
-    id!: number;
+    id!: string;
 
     @Field(() => GraphQLISODateTime)
     @Column('timestamp with time zone', { default: () => 'CURRENT_TIMESTAMP' })

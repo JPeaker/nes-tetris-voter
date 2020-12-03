@@ -31,13 +31,16 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 scalar DateTime
 
 type Mutation {
+  addVote(id: String!): RelatedPossibility!
   createBoard(board: BoardInput!): Board!
   deleteBoard(id: Int!): Boolean!
+  removeVote(id: String!): RelatedPossibility!
 }
 
 type Query {
   board(id: Int!): Board!
   boards: [Board!]!
+  possibility(id: String!): RelatedPossibility!
   randomBoard: Board!
 }
 
@@ -45,8 +48,8 @@ type Query {
 type RelatedPossibility {
   blocks: [Coordinate!]!
   column: Int!
-  distance: Int!
   id: ID!
   orientation: Int!
   row: Int!
+  votes: Int!
 }

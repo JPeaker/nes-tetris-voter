@@ -6,6 +6,7 @@ import { connection } from './data/config';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { BoardResolver } from './data/BoardResolver';
+import { RelatedPossibilityResolver } from './data/RelatedPossibilityResolver';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -17,7 +18,8 @@ app.use(cors());
 const main = async () => {
   await connection;
   const schema = await buildSchema({
-    resolvers: [BoardResolver],
+    // resolvers: [BoardResolver],
+    resolvers: [BoardResolver, RelatedPossibilityResolver],
     emitSchemaFile: true,
     validate: false,
   });
