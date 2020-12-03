@@ -11,6 +11,7 @@ interface ChoiceGridProps {
   possibilities: Possibility[];
   possibilityToRender: Possibility | null;
   setSelected?: (possibility: Possibility | null) => void;
+  consideredPlacement: ConsideredPlacement;
   setConsideredPlacement?: (placement: ConsideredPlacement) => void;
 }
 
@@ -20,7 +21,7 @@ type GridPossibilities = {
   } | undefined;
 }
 
-function ChoiceGrid({ grid, possibilities, possibilityToRender, setSelected, setConsideredPlacement }: ChoiceGridProps) {
+function ChoiceGrid({ grid, possibilities, possibilityToRender, setSelected, consideredPlacement, setConsideredPlacement }: ChoiceGridProps) {
   const gridPossibilities = possibilities.reduce((accMap: GridPossibilities, possibility: Possibility) => {
     const newerMap = {...accMap};
     possibility.blocks.forEach(block => {
@@ -47,10 +48,10 @@ function ChoiceGrid({ grid, possibilities, possibilityToRender, setSelected, set
     const potentialPossibilities = gridPossibilities[row] && gridPossibilities[row]![column];
     if (potentialPossibilities && potentialPossibilities.length > 0 && setConsideredPlacement && setSelected) {
       props.onClick = () => {
-        setSelected(potentialPossibilities[0]);
+        setSelected(possibilityToRender);
       }
       props.onMouseEnter = () => {
-        setConsideredPlacement({ row, column });
+        setConsideredPlacement({ ...consideredPlacement, row, column });
       }
     }
 
@@ -62,7 +63,7 @@ function ChoiceGrid({ grid, possibilities, possibilityToRender, setSelected, set
       possiblePiece={possibilityToRender ? getPiece(possibilityToRender) : undefined}
       className="tetris-grid"
       getBlockProps={getBlockProps}
-      onMouseLeave={setConsideredPlacement ? () => setConsideredPlacement(null) : undefined}
+      onMouseLeave={setConsideredPlacement ? () => setConsideredPlacement({}) : undefined}
     />
   );
 }
