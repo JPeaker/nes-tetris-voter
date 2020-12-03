@@ -18,7 +18,7 @@ function PossibilityList({ possibilities, selected, setSelected, considered, vot
         const isSelected = selected && selected.id === possibility.id;
         const isConsidered = considered && considered.id === possibility.id;
         return (
-          <li key={possibility.id} className={`list-group-item ${!isConsidered && !isSelected ? 'disabled' : ''} ${isSelected ? 'active' : ''}`} onClick={() => setSelected(possibility)}>
+          <li key={possibility.id} className={`list-group-item ${isConsidered && !isSelected ? 'current-considered-possibility' : ''} ${isSelected ? 'active' : ''}`} onClick={() => setSelected(possibility)}>
             <div className="row-fluid">
               <span>{ possibilityDescriber(possibility) }</span>
               { votedFor && votedFor.id === possibility.id ? <span>Chosen</span> : undefined}

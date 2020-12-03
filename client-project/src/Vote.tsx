@@ -15,58 +15,79 @@ function Vote({ board }: { board: Board }) {
   const [selectedPossibility, setSelectedPossibility] = useState<Possibility | null>(null);
   const [votedFor, setVotedFor] = useState<Possibility | null>(null);
 
-  useEffect(() => {
-    const handler = (event: KeyboardEvent) => inputHandler({
-      Escape: () => {
-        setSelectedPossibility(null);
-        setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: undefined });
-      },
-      KeyW: () => {
-        setSelectedPossibility(null);
-        setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: Orientation.Up});
-      },
-      KeyA: () => {
-        setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: Orientation.Left});
-        setSelectedPossibility(null);
-      },
-      KeyS: () => {
-        setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: Orientation.Down});
-        setSelectedPossibility(null);
-      },
-      KeyD: () => {
-        setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: Orientation.Right});
-        setSelectedPossibility(null);
-      },
-      ArrowLeft: () => {
-        if (consideredPossibilityIndex > 0) {
-          setConsideredPossibilityIndex(consideredPossibilityIndex - 1);
-        }
-        setSelectedPossibility(null);
-      },
-      ArrowRight: () => {
-        if (consideredPossibilityIndex > 0) {
-          setConsideredPossibilityIndex(consideredPossibilityIndex + 1);
-        }
-        setSelectedPossibility(null);
-      },
-    }, event);
-
-    document.addEventListener('keydown', handler);
-
-    return () => {
-      document.removeEventListener('keydown', handler);
-    }
-  });
+  const modifiedSetSelected = (possibility: Possibility | null) => {
+    setSelectedPossibility(possibility);
+    setConsideredPossibilityIndex(0);
+  }
 
   const consideredPossibilities = board.possibilities.filter(possibility =>
-    (consideredPlacement.orientation === undefined || consideredPlacement.orientation === possibility.orientation) &&
-    (
-      !consideredPlacement.row && !consideredPlacement.column ||
-      possibility.blocks.some(block => consideredPlacement.row === block.row && consideredPlacement.column === block.column)
-    )
+    !consideredPlacement.row && !consideredPlacement.column ||
+    possibility.blocks.some(block => consideredPlacement.row === block.row && consideredPlacement.column === block.column)
   );
 
-  const consideredPossibility = consideredPossibilities && consideredPossibilities[consideredPossibilityIndex % consideredPossibilities.length];
+  const orientedPossibilities = !!consideredPossibilities &&
+    consideredPossibilities.filter(possibility => possibility.orientation === consideredPlacement.orientation);
+
+    useEffect(() => {
+      const handler = (event: KeyboardEvent) => inputHandler({
+        Escape: () => {
+          modifiedSetSelected(null);
+          setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: undefined });
+        },
+        KeyW: () => {
+          if (consideredPlacement.orientation === Orientation.Up && orientedPossibilities.length > 0) {
+            setConsideredPossibilityIndex(consideredPossibilityIndex + 1);
+          } else {
+            setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: Orientation.Up});
+            setSelectedPossibility(null);
+          }
+        },
+        KeyA: () => {
+          if (consideredPlacement.orientation === Orientation.Left && orientedPossibilities.length > 0) {
+            setConsideredPossibilityIndex(consideredPossibilityIndex + 1);
+          } else {
+            setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: Orientation.Left});
+            setSelectedPossibility(null);
+          }
+        },
+        KeyS: () => {
+          if (consideredPlacement.orientation === Orientation.Down && orientedPossibilities.length > 0) {
+            setConsideredPossibilityIndex(consideredPossibilityIndex + 1);
+          } else {
+            setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: Orientation.Down});
+            setSelectedPossibility(null);
+          }
+        },
+        KeyD: () => {
+          if (consideredPlacement.orientation === Orientation.Right && orientedPossibilities.length > 0) {
+            setConsideredPossibilityIndex(consideredPossibilityIndex + 1);
+          } else {
+            setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: Orientation.Right});
+            setSelectedPossibility(null);
+          }
+        },
+        ArrowLeft: () => {
+          if (consideredPossibilityIndex > 0) {
+            setConsideredPossibilityIndex(consideredPossibilityIndex - 1);
+          }
+          setSelectedPossibility(null);
+        },
+        ArrowRight: () => {
+          setConsideredPossibilityIndex(consideredPossibilityIndex + 1);
+          setSelectedPossibility(null);
+        },
+      }, event);
+
+      document.addEventListener('keydown', handler);
+
+      return () => {
+        document.removeEventListener('keydown', handler);
+      }
+    });
+
+  const consideredPossibility = orientedPossibilities[consideredPossibilityIndex % orientedPossibilities.length] ||
+    consideredPossibilities[consideredPossibilityIndex % consideredPossibilities.length];
+
   return (
     <div className="container-fluid">
       <div className="row align-items-center justify-content-center">
@@ -76,12 +97,12 @@ function Vote({ board }: { board: Board }) {
             considered={consideredPossibility}
             selected={selectedPossibility}
             votedFor={votedFor}
-            setSelected={setSelectedPossibility}
+            setSelected={modifiedSetSelected}
           />
         </div>
         <div className="col">
           <VoteButton selected={selectedPossibility} voted={votedFor} onVoted={setVotedFor} />
-          <button disabled={selectedPossibility === null} onClick={() => setSelectedPossibility(null)}>Clear Choice</button>
+          <button disabled={selectedPossibility === null} onClick={() => modifiedSetSelected(null)}>Clear Choice</button>
         </div>
         <div className="col">
           <ChoiceGrid
@@ -90,7 +111,7 @@ function Vote({ board }: { board: Board }) {
             possibilityToRender={selectedPossibility || consideredPossibility}
             consideredPlacement={consideredPlacement}
             setConsideredPlacement={selectedPossibility ? undefined : setConsideredPlacement}
-            setSelected={selectedPossibility ? undefined : setSelectedPossibility}
+            setSelected={selectedPossibility ? undefined : modifiedSetSelected}
           />
         </div>
       </div>
