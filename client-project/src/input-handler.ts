@@ -1,4 +1,4 @@
-interface VoteInputHandlerMethods {
+interface InputHandlerMethods {
   Escape: () => void;
   KeyW: () => void;
   KeyA: () => void;
@@ -10,9 +10,9 @@ interface VoteInputHandlerMethods {
   [key: string]: () => void;
 }
 
-export default function voteInputHandler(methods: VoteInputHandlerMethods, event: KeyboardEvent): void {
+export default function inputHandler(methods: Partial<InputHandlerMethods>, event: KeyboardEvent): void {
   if (methods[event.code]) {
     event.preventDefault();
-    methods[event.code]();
+    methods[event.code]!();
   }
 };

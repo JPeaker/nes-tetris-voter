@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Board, Possibility } from './CommonModels';
 import Vote from './Vote';
+import ShowVotes from './ShowVotes';
 
 const GET_BOARD_QUERY = gql`
   query getBoard($id: String) {
@@ -51,7 +52,7 @@ interface VoteData {
 function VotePage() {
   const query = new URLSearchParams(useLocation().search);
   const [votedFor, setVotedFor] = useState<Possibility | null>(null);
-  const [getBoard, { data, loading, error }] = useLazyQuery<{ board: Board }, { id?: string }>(GET_BOARD_QUERY);
+  const [getBoard, { data, loading, error, refetch }] = useLazyQuery<{ board: Board }, { id?: string }>(GET_BOARD_QUERY);
   const [addVote] = useMutation<VoteData>(ADD_VOTE);
   const [removeVote] = useMutation<VoteData>(REMOVE_VOTE);
 
@@ -62,20 +63,25 @@ function VotePage() {
   if (loading) {
     return <span>Loading a scenario...</span>;
   }
-
-  const vote = (newVoteFor: Possibility | null) => {
-    if (votedFor) {
-      removeVote({ variables: { id: votedFor.id }});
-    }
-
-    if (newVoteFor) {
-      addVote({ variables: { id: newVoteFor.id }})
-    }
-
-    setVotedFor(newVoteFor);
-  };
-
   if (data) {
+    const vote = (newVoteFor: Possibility | null) => {
+      if (votedFor) {
+        removeVote({ variables: { id: votedFor.id }});
+      }
+
+      if (newVoteFor) {
+        addVote({ variables: { id: newVoteFor.id }})
+      }
+
+      setVotedFor(newVoteFor);
+      console.log('refetching');
+      refetch!({ id: data.board.id });
+    };
+
+    if (votedFor) {
+      return <ShowVotes board={data.board} voteFor={vote} votedFor={votedFor} />
+    }
+
     return <Vote board={data.board} voteFor={vote} votedFor={votedFor} />
   }
 

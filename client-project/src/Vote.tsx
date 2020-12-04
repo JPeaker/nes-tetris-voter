@@ -5,7 +5,7 @@ import { Board, Possibility } from './CommonModels';
 import PossibilityList from './PossibilityList';
 import ConfirmVote from './ConfirmVote';
 import ChoiceGrid from './ChoiceGrid';
-import inputHandler from './vote-input-handler';
+import inputHandler from './input-handler';
 import describer from './possibility-describer';
 import { Col, Container, Row } from 'react-bootstrap';
 import { TetrisGrid } from 'nes-tetris-components';
