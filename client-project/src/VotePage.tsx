@@ -1,7 +1,7 @@
-import { gql, useLazyQuery } from '@apollo/client';
-import React from 'react';
+import { gql, useLazyQuery, useMutation } from '@apollo/client';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Board } from './CommonModels';
+import { Board, Possibility } from './CommonModels';
 import Vote from './Vote';
 
 const GET_BOARD_QUERY = gql`
@@ -27,9 +27,33 @@ const GET_BOARD_QUERY = gql`
   }
 `;
 
+const ADD_VOTE = gql`
+  mutation addVote($id: String!) {
+    addVote(id: $id) {
+      votes
+    }
+  }
+`;
+
+const REMOVE_VOTE = gql`
+  mutation removeVote($id: String!) {
+    removeVote(id: $id) {
+      votes
+    }
+  }
+`;
+
+interface VoteData {
+  votes: number;
+}
+
 function VotePage() {
   const query = new URLSearchParams(useLocation().search);
+  const [votedFor, setVotedFor] = useState<Possibility | null>(null);
   const [getBoard, { data, loading, error }] = useLazyQuery<{ board: Board }, { id?: string }>(GET_BOARD_QUERY);
+  const [addVote] = useMutation<VoteData>(ADD_VOTE);
+  const [removeVote] = useMutation<VoteData>(REMOVE_VOTE);
+
   if (error) {
     return <span>{error.message}</span>
   }
@@ -39,9 +63,20 @@ function VotePage() {
   }
 
   const board = data && data.board;
+  const vote = (newVoteFor: Possibility | null) => {
+    if (votedFor) {
+      removeVote({ variables: { id: votedFor.id }});
+    }
+
+    if (newVoteFor) {
+      addVote({ variables: { id: newVoteFor.id }})
+    }
+
+    setVotedFor(newVoteFor);
+  };
 
   if (board) {
-    return <Vote board={board} />
+    return <Vote board={board} voteFor={vote} votedFor={votedFor} />
   }
 
   getBoard({ variables: { id: query.get('id') || undefined }});

@@ -63,7 +63,7 @@ function ChoiceGrid({ grid, possibilities, possibilityToRender, setSelected, con
       possiblePiece={possibilityToRender ? getPiece(possibilityToRender) : undefined}
       className="tetris-grid"
       getBlockProps={getBlockProps}
-      onMouseLeave={setConsideredPlacement ? () => setConsideredPlacement({}) : undefined}
+      onMouseLeave={setConsideredPlacement ? () => setConsideredPlacement({ row: undefined, column: undefined, orientation: undefined }) : undefined}
     />
   );
 }
