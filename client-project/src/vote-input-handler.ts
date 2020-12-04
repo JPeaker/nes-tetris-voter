@@ -6,6 +6,8 @@ interface VoteInputHandlerMethods {
   KeyD: () => void;
   ArrowLeft: () => void;
   ArrowRight: () => void;
+  // ArrowUp: () => void;
+  // ArrowDown: () => void;
   [key: string]: () => void;
 }
 

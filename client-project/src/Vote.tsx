@@ -28,54 +28,41 @@ function Vote({ board }: { board: Board }) {
   const orientedPossibilities = !!consideredPossibilities &&
     consideredPossibilities.filter(possibility => possibility.orientation === consideredPlacement.orientation);
 
+    const removeConsiderations = () => {
+      modifiedSetSelected(null);
+      setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: undefined });
+    };
+
+    const prefer = (orientation: Orientation) => () => {
+      if (consideredPlacement.orientation === orientation && orientedPossibilities.length > 0) {
+        setConsideredPossibilityIndex(consideredPossibilityIndex + 1);
+      } else {
+        setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation });
+        setSelectedPossibility(null);
+      }
+    };
+
+    const scrollDownConsiderations = () => {
+      if (consideredPossibilityIndex > 0) {
+        setConsideredPossibilityIndex(consideredPossibilityIndex - 1);
+      }
+      setSelectedPossibility(null);
+    };
+    const scrollUpConsiderations = () => {
+      setConsideredPossibilityIndex(consideredPossibilityIndex + 1);
+      setSelectedPossibility(null);
+    };
     useEffect(() => {
       const handler = (event: KeyboardEvent) => inputHandler({
-        Escape: () => {
-          modifiedSetSelected(null);
-          setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: undefined });
-        },
-        KeyW: () => {
-          if (consideredPlacement.orientation === Orientation.Up && orientedPossibilities.length > 0) {
-            setConsideredPossibilityIndex(consideredPossibilityIndex + 1);
-          } else {
-            setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: Orientation.Up});
-            setSelectedPossibility(null);
-          }
-        },
-        KeyA: () => {
-          if (consideredPlacement.orientation === Orientation.Left && orientedPossibilities.length > 0) {
-            setConsideredPossibilityIndex(consideredPossibilityIndex + 1);
-          } else {
-            setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: Orientation.Left});
-            setSelectedPossibility(null);
-          }
-        },
-        KeyS: () => {
-          if (consideredPlacement.orientation === Orientation.Down && orientedPossibilities.length > 0) {
-            setConsideredPossibilityIndex(consideredPossibilityIndex + 1);
-          } else {
-            setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: Orientation.Down});
-            setSelectedPossibility(null);
-          }
-        },
-        KeyD: () => {
-          if (consideredPlacement.orientation === Orientation.Right && orientedPossibilities.length > 0) {
-            setConsideredPossibilityIndex(consideredPossibilityIndex + 1);
-          } else {
-            setConsideredPlacement({ row: consideredPlacement.row, column: consideredPlacement.column, orientation: Orientation.Right});
-            setSelectedPossibility(null);
-          }
-        },
-        ArrowLeft: () => {
-          if (consideredPossibilityIndex > 0) {
-            setConsideredPossibilityIndex(consideredPossibilityIndex - 1);
-          }
-          setSelectedPossibility(null);
-        },
-        ArrowRight: () => {
-          setConsideredPossibilityIndex(consideredPossibilityIndex + 1);
-          setSelectedPossibility(null);
-        },
+        Escape: removeConsiderations,
+        KeyW: prefer(Orientation.Up),
+        KeyA: prefer(Orientation.Left),
+        KeyS: prefer(Orientation.Down),
+        KeyD: prefer(Orientation.Right),
+        ArrowLeft: scrollDownConsiderations,
+        ArrowUp: scrollDownConsiderations,
+        ArrowRight: scrollUpConsiderations,
+        ArrowDown: scrollUpConsiderations,
       }, event);
 
       document.addEventListener('keydown', handler);

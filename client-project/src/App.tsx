@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import VotePage from './VotePage';
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Link, useHistory, Redirect } from 'react-router-dom';
 
 function App() {
+  const [search, setSearch] = useState<string>('');
+
   return (
-    <BrowserRouter>
+    <>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -19,17 +29,23 @@ function App() {
             </li>
           </ul>
           <form className="form-inline my-2 my-lg-0">
-            <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search by ID" />
-            <button className="btn btn-outline-success my-2 my-sm-0" type="submit">
-              <span className="oi oi-magnifying-glass" title="search" aria-hidden="true"></span>
-            </button>
+            <input
+              className="form-control mr-sm-2"
+              type="search"
+              placeholder="Search"
+              aria-label="Search by ID"
+              value={search}
+              onChange={event => setSearch(event.currentTarget.value)}
+            />
+            <Link to={`/vote?id=${search}`}>
+              <button className="btn btn-outline-success my-2 my-sm-0" type="submit">
+                Go
+              </button>
+            </Link>
           </form>
         </div>
       </nav>
       <Switch>
-        <Route path="/vote/:id">
-          <VotePage />
-        </Route>
         <Route path={['/', '/vote']}>
           <VotePage />
         </Route>
@@ -37,7 +53,7 @@ function App() {
           Create
         </Route>
       </Switch>
-    </BrowserRouter>
+    </>
   );
 }
 
