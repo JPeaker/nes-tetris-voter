@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ColumnIndex, Orientation, RowIndex } from 'nes-tetris-representation';
+import { ColumnIndex, getPiece, getPieceGrid, Orientation, Piece, RowIndex } from 'nes-tetris-representation';
 import _ from 'lodash';
 import { Board, Possibility } from './CommonModels';
 import PossibilityList from './PossibilityList';
@@ -7,10 +7,18 @@ import ConfirmVote from './ConfirmVote';
 import ChoiceGrid from './ChoiceGrid';
 import inputHandler from './vote-input-handler';
 import describer from './possibility-describer';
+import { Col, Container, Row } from 'react-bootstrap';
+import { TetrisGrid } from 'nes-tetris-components';
 
 export type ConsideredPlacement = { row?: RowIndex, column?: ColumnIndex, orientation?: Orientation };
 
-function Vote({ board, voteFor, votedFor }: { board: Board, voteFor: (possibility: Possibility | null) => void, votedFor: Possibility | null }) {
+interface VoteProps {
+  board: Board,
+  voteFor: (possibility: Possibility | null) => void,
+  votedFor: Possibility | null
+};
+
+function Vote({ board, voteFor, votedFor }: VoteProps) {
   const [consideredPlacement, setConsideredPlacement] = useState<ConsideredPlacement>({});
   const [consideredPossibilityIndex, setConsideredPossibilityIndex] = useState<number>(0);
   const [selectedPossibility, setSelectedPossibility] = useState<Possibility | null>(null);
@@ -80,21 +88,10 @@ function Vote({ board, voteFor, votedFor }: { board: Board, voteFor: (possibilit
   const consideredPossibility = consideredPossibilities[consideredPossibilityIndex % consideredPossibilities.length];
 
   return (
-    <div className="container-fluid">
-      <div className="row align-items-center justify-content-center">
-        <div className="col">
-          <PossibilityList
-            possibilities={consideredPossibilities}
-            considered={consideredPossibility}
-            selected={selectedPossibility}
-            votedFor={votedFor}
-            setSelected={modifiedSetSelected}
-          />
-        </div>
-        <div className="col">
-          <button disabled={selectedPossibility === null} onClick={() => modifiedSetSelected(null)}>Clear Choice</button>
-        </div>
-        <div className="col">
+    <Container fluid>
+      <Row className="flex-row fluid align-items-center justify-content-center mt-5">
+        <Col xs={2} />
+        <Col xs={3}>
           <ChoiceGrid
             grid={board.board}
             possibilities={board.possibilities}
@@ -103,15 +100,32 @@ function Vote({ board, voteFor, votedFor }: { board: Board, voteFor: (possibilit
             setConsideredPlacement={selectedPossibility ? undefined : setConsideredPlacement}
             setSelected={selectedPossibility ? undefined : modifiedSetSelected}
           />
-        </div>
-      </div>
+        </Col>
+        <Col xs={1}>
+          NEXT:
+          <TetrisGrid grid={getPieceGrid(board.nextPiece)} hideTopTwoRows={false} blockSizeInRem={1.5} className="tetris-grid" />
+        </Col>
+        <Col xs={4}>
+          <PossibilityList
+            possibilities={consideredPossibilities}
+            considered={consideredPossibility}
+            selected={selectedPossibility}
+            votedFor={votedFor}
+            setSelected={setConsideredPlacement}
+          />
+        </Col>
+        <Col xs={2} />
+        {/* <Col>
+          <button disabled={selectedPossibility === null} onClick={() => modifiedSetSelected(null)}>Clear Choice</button>
+        </Col> */}
+      </Row>
       <ConfirmVote
         description={selectedPossibility ? describer(selectedPossibility) : undefined}
         show={selectedPossibility !== null}
         vote={() => vote(selectedPossibility)}
         cancel={removeConsiderations}
       />
-    </div>
+    </Container>
   );
 }
 

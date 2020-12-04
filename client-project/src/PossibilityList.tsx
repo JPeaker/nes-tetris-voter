@@ -2,6 +2,7 @@ import React from 'react';
 import './PossibilityList.css';
 import { Possibility } from './CommonModels';
 import possibilityDescriber from './possibility-describer';
+import { ListGroup } from 'react-bootstrap';
 
 interface PossibilityListProps {
   possibilities: Possibility[];
@@ -13,20 +14,20 @@ interface PossibilityListProps {
 
 function PossibilityList({ possibilities, selected, setSelected, considered, votedFor }: PossibilityListProps) {
   return (
-    <ul id="possibility-list" className="list-group overflow-auto possibility-list col-6 container">
+    <ListGroup className="overflow-auto possibility-list col-6 container">
       { possibilities.map(possibility => {
-        const isSelected = selected && selected.id === possibility.id;
-        const isConsidered = considered && considered.id === possibility.id;
+        const isSelected = !!selected && selected.id === possibility.id;
+        const isConsidered = !!considered && considered.id === possibility.id;
         return (
-          <li key={possibility.id} className={`list-group-item ${isConsidered && !isSelected ? 'current-considered-possibility' : ''} ${isSelected ? 'active' : ''}`} onClick={() => setSelected(possibility)}>
+          <ListGroup.Item key={possibility.id} active={isSelected} className={`list-group-item ${isConsidered && !isSelected ? 'current-considered-possibility' : ''}`} onClick={() => setSelected(possibility)}>
             <div className="row-fluid">
               <span>{ possibilityDescriber(possibility) }</span>
               { votedFor && votedFor.id === possibility.id ? <span>Chosen</span> : undefined}
             </div>
-          </li>
+          </ListGroup.Item>
         );
       })}
-    </ul>
+    </ListGroup>
   );
 }
 

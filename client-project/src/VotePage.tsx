@@ -10,6 +10,7 @@ const GET_BOARD_QUERY = gql`
       id,
       board,
       currentPiece,
+      nextPiece,
       createdAt,
       possibilities {
         id,
@@ -62,7 +63,6 @@ function VotePage() {
     return <span>Loading a scenario...</span>;
   }
 
-  const board = data && data.board;
   const vote = (newVoteFor: Possibility | null) => {
     if (votedFor) {
       removeVote({ variables: { id: votedFor.id }});
@@ -75,8 +75,8 @@ function VotePage() {
     setVotedFor(newVoteFor);
   };
 
-  if (board) {
-    return <Vote board={board} voteFor={vote} votedFor={votedFor} />
+  if (data) {
+    return <Vote board={data.board} voteFor={vote} votedFor={votedFor} />
   }
 
   getBoard({ variables: { id: query.get('id') || undefined }});

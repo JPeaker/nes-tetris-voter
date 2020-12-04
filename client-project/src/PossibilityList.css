@@ -1,10 +1,9 @@
 .possibility-list {
-  height: 300px;
+  height: 40rem;
   border: 1px solid #aaa;
 }
 
 .tetris-grid {
-  margin-top: auto;
   margin: auto;
 }
 

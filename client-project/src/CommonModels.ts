@@ -14,5 +14,6 @@ export interface Board {
   id: string;
   board: Grid;
   currentPiece: Piece;
+  nextPiece: Piece;
   possibilities: Possibility[];
 }
