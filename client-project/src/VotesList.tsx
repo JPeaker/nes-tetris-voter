@@ -13,7 +13,7 @@ interface VotesListProps {
 
 function VotesList({ possibilities, selected, setSelected }: VotesListProps) {
   const sorted = [...possibilities].sort((p1, p2) => p2.votes - p1.votes);
-
+  const totalVotes = sorted.reduce((x, y) => x + y.votes, 0);
   const selectedIndex = sorted.findIndex(p => p.id === selected.id);
   useEffect(() => {
     const handler = (event: KeyboardEvent) => inputHandler({
@@ -40,7 +40,7 @@ function VotesList({ possibilities, selected, setSelected }: VotesListProps) {
             <Container>
               <Row>
                 <Col xs={8}>{ possibilityDescriber(possibility) }</Col>
-                <Col className="justify-content-end" xs={4}>{ possibility.votes }</Col>
+                <Col className="justify-content-end" xs={4}>{ possibility.votes } votes, { Math.round(possibility.votes * 100 / totalVotes) }%</Col>
               </Row>
             </Container>
           </ListGroup.Item>
