@@ -1,6 +1,23 @@
 # TODO List
 
-So many things to be done!
+## Front-end
+
+1. Allow scenario creation
+2. Add page of "all scenarios"
+2. Style things in some actual reasonable way
+3. Add logins
+
+## Back-end
+
+1. Add "all scenarios" limits
+2. Add user concept
+
+## Miscellaneous
+
+1. Credits page
+2. intro.js guide
+
+# Done
 
 ## Front-end
 
@@ -9,7 +26,6 @@ So many things to be done!
 3. Allow selecting a move
 4. Add scenario selection
 5. Allow voting
-6. Style things in some actual reasonable way
 
 ## Back-end
 
@@ -17,8 +33,3 @@ So many things to be done!
 2. Set up GraphQL
 3. Set up schema to allow /graphql endpoint
 4. Hook up front-end
-
-## Miscellaneous
-
-1. Credits page
-2. Guide?

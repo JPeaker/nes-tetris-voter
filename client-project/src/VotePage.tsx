@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Board, Possibility } from './CommonModels';
 import Vote from './Vote';
-import ShowVotes from './ShowVotes';
 
 const GET_BOARD_QUERY = gql`
   query getBoard($id: String) {
@@ -74,13 +73,8 @@ function VotePage() {
       }
 
       setVotedFor(newVoteFor);
-      console.log('refetching');
       refetch!({ id: data.board.id });
     };
-
-    if (votedFor) {
-      return <ShowVotes board={data.board} voteFor={vote} votedFor={votedFor} />
-    }
 
     return <Vote board={data.board} voteFor={vote} votedFor={votedFor} />
   }

@@ -1,18 +1,18 @@
 interface InputHandlerMethods {
-  Escape: () => void;
-  KeyW: () => void;
-  KeyA: () => void;
-  KeyS: () => void;
-  KeyD: () => void;
-  ArrowUp: () => void;
-  ArrowDown: () => void;
-  Enter: () => void;
+  escape: () => void;
+  w: () => void;
+  a: () => void;
+  s: () => void;
+  d: () => void;
+  arrowup: () => void;
+  arrowdown: () => void;
+  enter: () => void;
   [key: string]: () => void;
 }
 
-export default function inputHandler(methods: Partial<InputHandlerMethods>, event: KeyboardEvent): void {
-  if (methods[event.code]) {
+export default function inputHandler(methods: Partial<InputHandlerMethods>, event: React.KeyboardEvent<HTMLDivElement>): void {
+  if (methods[event.key.toLowerCase()]) {
     event.preventDefault();
-    methods[event.code]!();
+    methods[event.key.toLowerCase()]!();
   }
 };

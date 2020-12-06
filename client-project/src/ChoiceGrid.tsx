@@ -10,16 +10,20 @@ interface ChoiceGridProps {
   possibility: Possibility;
   setConsideredRowColumn: (row: RowIndex, columm: ColumnIndex) => void;
   onClick: () => void;
+  freezeHover?: boolean;
 }
 
-function ChoiceGrid({ grid, possibility, setConsideredRowColumn, onClick }: ChoiceGridProps) {
+function ChoiceGrid({ grid, possibility, setConsideredRowColumn, onClick, freezeHover = false }: ChoiceGridProps) {
   const getBlockProps = (row: RowIndex, column: ColumnIndex, value: BlockValue) => {
-    const props: Partial<BlockProps> = {
-      onMouseEnter: () => setConsideredRowColumn(row, column),
-    };
+    const props: Partial<BlockProps> = {};
+
+    if (!freezeHover) {
+      props.onMouseEnter = () => setConsideredRowColumn(row, column);
+    }
 
     if (possibility && possibility.blocks.some(block => block.row === row && block.column === column)) {
       props.value = value;
+      props.onClick = onClick;
     }
 
     return props;
@@ -31,7 +35,6 @@ function ChoiceGrid({ grid, possibility, setConsideredRowColumn, onClick }: Choi
       possiblePiece={possibility ? getPiece(possibility) : undefined}
       className="tetris-grid"
       getBlockProps={getBlockProps}
-      onClick={onClick}
     />
   );
 }
