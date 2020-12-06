@@ -132,14 +132,11 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
           <ChoiceGrid
             grid={board.board}
             possibility={possibility}
+            nextPiece={board.nextPiece}
             freezeHover={votedFor !== null}
             setConsideredRowColumn={setFirstConsideredRowColumn}
             onClick={() => setShowVote(true)}
           />
-        </Col>
-        <Col xs={1}>
-          NEXT:
-          <TetrisGrid grid={getPieceGrid(board.nextPiece)} hideTopTwoRows={false} blockSizeInRem={1.5} className="tetris-grid" />
         </Col>
         <Col xs={6}>
           <PossibilityList

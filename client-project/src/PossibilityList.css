@@ -4,7 +4,56 @@
 }
 
 .tetris-grid {
-  margin: auto;
+  padding-top: 1.625rem;
+  margin-left: 3.1rem;
+}
+
+.next-piece {
+  float: initial;
+}
+
+.next-piece-I {
+  margin-left: 28rem;
+  margin-top: -19rem;
+}
+
+.next-piece-T {
+  margin-left: 28.75rem;
+  margin-top: -20rem;
+}
+
+.next-piece-J {
+  margin-left: 28.5rem;
+  margin-top: -20rem;
+}
+
+.next-piece-L {
+  margin-left: 28.75rem;
+  margin-top: -20rem;
+}
+
+.next-piece-S {
+  margin-left: 28.5rem;
+  margin-top: -20rem;
+}
+
+.next-piece-Z {
+  margin-left: 28.5rem;
+  margin-top: -20rem;
+}
+
+.next-piece-O {
+  margin-left: 29.5rem;
+  margin-top: -20rem;
+}
+
+.tetris-grid-wrapper {
+  width: 36.13rem;
+  height: 43.3679rem;
+  background-image: url(./background.png);
+  background-repeat:no-repeat;
+  background-size:contain;
+  background-position:center;
 }
 
 .current-considered-possibility {

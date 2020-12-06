@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { BlockValue, ColumnIndex, getPiece, Grid, RowIndex } from 'nes-tetris-representation';
+import { BlockValue, ColumnIndex, getPiece, getPieceGrid, Grid, Piece, PieceList, RowIndex } from 'nes-tetris-representation';
 import { BlockProps, TetrisGrid } from 'nes-tetris-components';
 import './PossibilityList.css';
 import { Possibility } from './CommonModels';
@@ -8,12 +8,13 @@ import { Possibility } from './CommonModels';
 interface ChoiceGridProps {
   grid: Grid;
   possibility: Possibility;
+  nextPiece: Piece;
   setConsideredRowColumn: (row: RowIndex, columm: ColumnIndex) => void;
   onClick: () => void;
   freezeHover?: boolean;
 }
 
-function ChoiceGrid({ grid, possibility, setConsideredRowColumn, onClick, freezeHover = false }: ChoiceGridProps) {
+function ChoiceGrid({ grid, possibility, nextPiece, setConsideredRowColumn, onClick, freezeHover = false }: ChoiceGridProps) {
   const getBlockProps = (row: RowIndex, column: ColumnIndex, value: BlockValue) => {
     const props: Partial<BlockProps> = {};
 
@@ -29,13 +30,17 @@ function ChoiceGrid({ grid, possibility, setConsideredRowColumn, onClick, freeze
     return props;
   }
 
+  const pieceLabel = PieceList.find(p => p.value === nextPiece)!.label;
   return (
-    <TetrisGrid
-      grid={grid}
-      possiblePiece={possibility ? getPiece(possibility) : undefined}
-      className="tetris-grid"
-      getBlockProps={getBlockProps}
-    />
+    <div className="tetris-grid-wrapper">
+      <TetrisGrid
+        grid={grid}
+        possiblePiece={possibility ? getPiece(possibility) : undefined}
+        className="tetris-grid"
+        getBlockProps={getBlockProps}
+      />
+      <TetrisGrid grid={getPieceGrid(nextPiece)} hideTopTwoRows={false} blockSizeInRem={1.5} className={`next-piece next-piece-${pieceLabel}`} />
+    </div>
   );
 }
 
