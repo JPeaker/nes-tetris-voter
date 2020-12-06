@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ColumnIndex, getPieceGrid, Orientation, RowIndex } from 'nes-tetris-representation';
+import { ColumnIndex, Orientation, RowIndex } from 'nes-tetris-representation';
 import _ from 'lodash';
 import { Board, Possibility } from './CommonModels';
 import PossibilityList from './PossibilityList';
@@ -8,7 +8,6 @@ import ChoiceGrid from './ChoiceGrid';
 import inputHandler from './input-handler';
 import describer from './possibility-describer';
 import { Col, Container, Row } from 'react-bootstrap';
-import { TetrisGrid } from 'nes-tetris-components';
 import selectNextOrientation from './selectNextOrientation';
 
 export type ConsideredPlacement = {

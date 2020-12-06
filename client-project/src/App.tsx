@@ -1,11 +1,13 @@
 import React, { useRef, useState } from 'react';
 import VotePage from './VotePage';
-import { Switch, Route, Link } from 'react-router-dom';
+import CreatePage from './CreatePage';
+import { Switch, Route, Link, useHistory } from 'react-router-dom';
 import { Container, Row } from 'react-bootstrap';
 
 function App() {
   const [search, setSearch] = useState<string>('');
   const searchRef = useRef<HTMLInputElement>(null);
+  const history = useHistory();
 
   const focusSearch = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === '/' && searchRef.current) {
@@ -13,6 +15,11 @@ function App() {
       event.preventDefault();
     }
   };
+  console.log(history.location.pathname);
+  const menuItems = [
+    { paths: ['/', '/vote'], name: 'Vote' },
+    { paths: ['/create'], name: 'Create' },
+  ]
   return (
     <Container className="p-0" fluid onKeyDown={focusSearch}>
       <Row noGutters xs={1}>
@@ -30,12 +37,13 @@ function App() {
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item active">
-                <Link className="nav-link" to="/vote">Vote</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/create">Create</Link>
-              </li>
+              {
+                menuItems.map(item => (
+                  <li className={`nav-item ${item.paths.includes(history.location.pathname) ? 'active' : ''}`}>
+                    <Link className="nav-link" to={item.paths.reverse()[0]}>{ item.name }</Link>
+                  </li>
+                ))
+              }
             </ul>
             <form className="form-inline my-2 my-lg-0">
               <input
@@ -58,11 +66,11 @@ function App() {
       </Row>
       <Row noGutters xs={1} className="p-0">
         <Switch>
+          <Route path="/create">
+            <CreatePage />
+          </Route>
           <Route path={['/', '/vote']}>
             <VotePage />
-          </Route>
-          <Route path="/create">
-            Create
           </Route>
         </Switch>
       </Row>
