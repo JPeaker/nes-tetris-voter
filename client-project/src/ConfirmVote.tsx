@@ -3,7 +3,7 @@ import { Button, Modal } from 'react-bootstrap';
 
 function ConfirmVote({ show, description, vote, cancel }: { show: boolean, description?: string, vote: () => void, cancel: () => void }) {
   return (
-    <Modal centered show={show} onHide={cancel} backdrop="static">
+    <Modal centered show={show} onHide={cancel}>
       <Modal.Body>Vote for {description}?</Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={cancel}>Cancel</Button>

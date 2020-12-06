@@ -24,11 +24,19 @@ interface VoteProps {
   votedFor: Possibility | null
 };
 
+interface IdToIndexMap {
+  [key: string]: number;
+}
+
 function Vote({ board, voteFor, votedFor }: VoteProps) {
   const [consideredPlacement, setConsideredPlacement] = useState<ConsideredPlacement>({});
   const [showVote, setShowVote] = useState<boolean>(false);
 
   const possibility = board.possibilities[consideredPlacement.index !== undefined ? consideredPlacement.index : 0];
+  const possibilityMapIdToIndex = board.possibilities.reduce((aggMap: IdToIndexMap, poss: Possibility, index: number) => {
+    aggMap[poss.id] = index;
+    return aggMap;
+  }, {} as IdToIndexMap);
   const removeConsiderations = () => {
     setConsideredPlacement({ row: undefined, column: undefined, orientation: undefined, index: undefined });
   };
@@ -38,64 +46,60 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
       return;
     }
 
-    const currentIndex = board.possibilities.findIndex(p => p.id === possibility.id);
+    let index: number;
+
     // It's easy if we don't have to worry about rows and columns
     if (consideredPlacement.row === undefined && consideredPlacement.column === undefined) {
-      const listRemainder = board.possibilities.slice(currentIndex + 1);
-      const remainderIndex = listRemainder.findIndex(p =>
-        (!consideredPlacement.row && !consideredPlacement.column || (p.row === consideredPlacement.row && p.column === consideredPlacement.column)) &&
-        p.orientation === orientation
+      const currentIndex = possibilityMapIdToIndex[possibility.id];
+      const remainderIndex = board.possibilities.slice(currentIndex + 1).findIndex(p =>
+        p.orientation === orientation &&
+        (!consideredPlacement.row && !consideredPlacement.column || (p.row === consideredPlacement.row && p.column === consideredPlacement.column))
       );
 
-      let index = remainderIndex === -1 ? currentIndex : currentIndex + remainderIndex + 1;
+      index = remainderIndex === -1 ? currentIndex : currentIndex + remainderIndex + 1;
 
       if (index === currentIndex) {
         index = board.possibilities.findIndex(p => p.orientation === orientation);
       }
-
-      setConsideredPlacement({ ...consideredPlacement, row: undefined, column: undefined, orientation, index });
     }
     else {
       const filteredPossibilities = board.possibilities.filter(p =>
         p.orientation === orientation &&
         p.blocks.some(p => p.row === consideredPlacement.row && p.column === consideredPlacement.column));
-      let index: number;
 
       if (filteredPossibilities.length === 0) {
+        const currentIndex = possibilityMapIdToIndex[possibility.id];
         const possibilitiesFilteredWithJustRowColumnFromCurrent = board.possibilities.slice(currentIndex + 1).filter(p =>
           p.blocks.some(p => p.row === consideredPlacement.row && p.column === consideredPlacement.column));
 
         if (possibilitiesFilteredWithJustRowColumnFromCurrent.length > 0) {
-          index = board.possibilities.findIndex(p => p.id === possibilitiesFilteredWithJustRowColumnFromCurrent[0].id);
-          console.log(index);
+          index = possibilityMapIdToIndex[possibilitiesFilteredWithJustRowColumnFromCurrent[0].id];
         } else {
           const possibilitiesFilteredWithJustRowColumn = board.possibilities.filter(p =>
             p.blocks.some(p => p.row === consideredPlacement.row && p.column === consideredPlacement.column));
           if (possibilitiesFilteredWithJustRowColumn.length > 0) {
-            index = board.possibilities.findIndex(p => p.id === possibilitiesFilteredWithJustRowColumn[0].id);
+            index = possibilityMapIdToIndex[possibilitiesFilteredWithJustRowColumn[0].id];
           } else {
-            index = possibility ? board.possibilities.findIndex(p => p.id === possibility.id) : 0;
+            index = possibilityMapIdToIndex[possibility.id];
           }
         }
       } else {
         const adjustedPossibilityIndex = possibility ? filteredPossibilities.findIndex(p => p.id === possibility.id) : 0;
         if (adjustedPossibilityIndex === -1) {
-          index = board.possibilities.findIndex(p => p.id === filteredPossibilities[0].id);
+          index = possibilityMapIdToIndex[filteredPossibilities[0].id];
 
           if (index === -1) {
             index = consideredPlacement.index || 0;
           }
+        } else if (adjustedPossibilityIndex === filteredPossibilities.length - 1) {
+          index = possibilityMapIdToIndex[filteredPossibilities[0].id];
         } else {
-          if (adjustedPossibilityIndex === filteredPossibilities.length - 1) {
-            index = board.possibilities.findIndex(p => p.id === filteredPossibilities[0].id);
-          } else {
-            index = board.possibilities.findIndex(p => p.id === filteredPossibilities[adjustedPossibilityIndex + 1].id);
-          }
+          index = possibilityMapIdToIndex[filteredPossibilities[adjustedPossibilityIndex + 1].id];
         }
       }
-
-      setConsideredPlacement({ ...consideredPlacement, orientation, index });
     }
+
+    setConsideredPlacement({ ...consideredPlacement, orientation, index });
   };
 
   const up = () => {
@@ -132,10 +136,14 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
   });
 
   const setFirstConsideredRowColumn = (row: RowIndex, column: ColumnIndex) => {
-    const index = board.possibilities.findIndex(p =>
+    let index = board.possibilities.findIndex(p =>
       p.blocks.some(block => block.row === row && block.column === column) &&
       (!consideredPlacement.orientation || p.orientation === consideredPlacement.orientation)
     );
+
+    if (index === -1) {
+      index = board.possibilities.findIndex(p => p.blocks.some(block => block.row === row && block.column === column));
+    }
 
     setConsideredPlacement({ ...consideredPlacement, row, column, index });
   }
@@ -149,7 +157,6 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
             grid={board.board}
             possibility={possibility}
             setConsideredRowColumn={setFirstConsideredRowColumn}
-            onMouseLeave={() => setConsideredPlacement({ ...consideredPlacement, row: undefined, column: undefined, index: 0 })}
             onClick={() => setShowVote(true)}
           />
         </Col>
@@ -157,24 +164,21 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
           NEXT:
           <TetrisGrid grid={getPieceGrid(board.nextPiece)} hideTopTwoRows={false} blockSizeInRem={1.5} className="tetris-grid" />
         </Col>
-        <Col xs={4}>
+        <Col xs={6}>
           <PossibilityList
             possibilities={board.possibilities}
             selected={possibility}
             votedFor={votedFor}
-            setSelected={setConsideredPlacement}
+            showVote={() => setShowVote(true)}
+            setSelected={(index: number) => setConsideredPlacement({ row: undefined, column: undefined, orientation: undefined, index })}
           />
         </Col>
-        <Col xs={2} />
-        {/* <Col>
-          <button disabled={selectedPossibility === null} onClick={() => modifiedSetSelected(null)}>Clear Choice</button>
-        </Col> */}
       </Row>
       <ConfirmVote
         description={possibility ? describer(possibility) : undefined}
-        show={null !== null}
+        show={showVote}
         vote={() => vote(possibility)}
-        cancel={removeConsiderations}
+        cancel={() => setShowVote(false)}
       />
     </Container>
   );
