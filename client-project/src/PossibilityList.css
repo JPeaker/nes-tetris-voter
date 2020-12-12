@@ -56,7 +56,53 @@
   background-position:center;
 }
 
+.current-text {
+  width: 8rem;
+  margin-left: 26rem;
+  margin-top: 1.5rem;
+}
+
 .current-considered-possibility {
   color: #495057;
   background-color: #f8f9fa;
+}
+
+.current-piece-select {
+  float: right;
+  bottom: 13rem;
+  right: -6.5rem;
+}
+
+.next-piece-select {
+  float: right;
+  bottom: 4rem;
+  right: -6.75rem;
+}
+
+.toggle-switch {
+  float: right;
+  bottom: 12.75rem;
+  right: -21rem;
+}
+
+.toggle-switch label {
+  color: white;
+}
+
+.piece-select-dropdown .tetris-grid {
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  border: none;
+  width: 8rem;
+}
+
+.dropdown-toggle .hidden {
+  background-color: #343a40;
+}
+
+.btn-dark:hover .hidden,
+.btn-dark:active .hidden {
+  background-color: #23272b;
 }

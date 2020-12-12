@@ -15,7 +15,7 @@ function App() {
       event.preventDefault();
     }
   };
-  console.log(history.location.pathname);
+
   const menuItems = [
     { paths: ['/', '/vote'], name: 'Vote' },
     { paths: ['/create'], name: 'Create' },
@@ -39,7 +39,7 @@ function App() {
             <ul className="navbar-nav mr-auto">
               {
                 menuItems.map(item => (
-                  <li className={`nav-item ${item.paths.includes(history.location.pathname) ? 'active' : ''}`}>
+                  <li key={item.name} className={`nav-item ${item.paths.includes(history.location.pathname) ? 'active' : ''}`}>
                     <Link className="nav-link" to={item.paths.reverse()[0]}>{ item.name }</Link>
                   </li>
                 ))
