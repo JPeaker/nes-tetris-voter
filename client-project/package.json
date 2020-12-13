@@ -36,8 +36,10 @@
   },
   "scripts": {
     "lint": "npm run lint:js && npm run lint:ts",
+    "blah": "echo 4",
     "lint:js": "eslint --ext .js,.jsx --cache '**/*.{jsx,js}' --fix",
     "lint:ts": "tslint -c tslint.json -p tslint-tsconfig.json --fix",
+    "prestart": "npm install",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest",

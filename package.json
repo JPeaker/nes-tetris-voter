@@ -1,0 +1,24 @@
+{
+  "name": "nes-tetris-voter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run start:client\" \"npm run start:server\"",
+    "start:client": "cd client-project && npm run start",
+    "start:server": "cd server-project && npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JPeaker/nes-tetris-voter.git"
+  },
+  "author": "Josh Peaker",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JPeaker/nes-tetris-voter/issues"
+  },
+  "homepage": "https://github.com/JPeaker/nes-tetris-voter#readme",
+  "dependencies": {
+    "concurrently": "^5.3.0"
+  }
+}

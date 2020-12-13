@@ -34,6 +34,7 @@
     "tslint-plugin-prettier": "^2.0.1"
   },
   "scripts": {
+    "prestart": "npm install",
     "start": "ts-node-dev ./src/index.ts --respawn --transpileOnly",
     "migrate": "npm run typeorm migration:run",
     "revert": "npm run typeorm migration:revert",
