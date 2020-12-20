@@ -24,7 +24,7 @@ const main = async () => {
     validate: false,
   });
 
-  const server = new ApolloServer({ schema });
+  const server = new ApolloServer({ schema, introspection: true });
   server.applyMiddleware({ app });
 }
 

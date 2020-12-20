@@ -10,7 +10,7 @@
     "start:client": "react-scripts start",
     "start:server-dev": "ts-node-dev ./server/index.ts --respawn --transpileOnly",
     "start:server": "ts-node ./server/index.ts",
-    "postinstall": "npm run build",
+    "postinstall": "npm run build && npm run migrate",
     "build": "react-scripts build",
     "migrate": "npm run typeorm migration:run",
     "revert": "npm run typeorm migration:revert",
