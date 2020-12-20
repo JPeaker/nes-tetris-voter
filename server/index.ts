@@ -31,11 +31,10 @@ const main = async () => {
 // tslint:disable-next-line:no-console
 main().catch(error => console.log(error));
 
-app.use(express.static(path.join(__dirname, '../../build')));
+app.use(express.static(path.join(__dirname, '../build')));
 
 app.get('/*', function (req, res) {
-  console.log(path.join(__dirname, '../../build', 'index.html'));
-  res.sendFile(path.join(__dirname, '../../build', 'index.html'));
+  res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 
 // tslint:disable-next-line:no-console

@@ -29,7 +29,6 @@ function VotePage() {
     return <span>Creating scenario...</span>;
   }
 
-  console.log(data);
   if (data) {
     useHistory().push(`/vote?id=${data.createBoard.id}`);
   }
