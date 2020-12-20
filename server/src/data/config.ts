@@ -18,7 +18,7 @@ export const connection = createConnection({
     subscribersDir: 'subscriber',
   },
   entities: [
-    'src/data/entity/*.ts'
+    'server/src/data/entity/*.ts'
   ],
   migrations: [
     './migration/*.ts'
