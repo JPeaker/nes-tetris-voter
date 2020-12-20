@@ -4,8 +4,9 @@ import App from './App';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { BrowserRouter } from 'react-router-dom';
 
+const uri = process.env.PUBLIC_URL ? '/graphql' : 'http://localhost:5000/graphql';
 const client = new ApolloClient({
-  uri: '/graphql',
+  uri,
   cache: new InMemoryCache(),
 });
 
