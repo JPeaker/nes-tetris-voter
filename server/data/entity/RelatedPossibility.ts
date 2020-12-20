@@ -1,6 +1,5 @@
-import { Piece } from 'nes-tetris-representation';
 import { ObjectType, Field, ID, Int } from 'type-graphql';
-import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, OneToOne, JoinTable, Column } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
 import { Coordinate } from '../Coordinate';
 import { Board } from './Board';
 import { Possibility } from './Possibility';
