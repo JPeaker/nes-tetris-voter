@@ -70,13 +70,13 @@
 .current-piece-select {
   float: right;
   bottom: 13rem;
-  right: -6.5rem;
+  right: 0;
 }
 
 .next-piece-select {
   float: right;
   bottom: 4rem;
-  right: -6.75rem;
+  right: 5rem;
 }
 
 .toggle-switch {

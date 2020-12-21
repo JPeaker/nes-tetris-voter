@@ -25,12 +25,9 @@ export default (
     let index: number;
 
     // It's easy if we don't have to worry about rows and columns
-    if (consideredPlacement.row === undefined && consideredPlacement.column === undefined) {
+    if (consideredPlacement.placement === undefined) {
       const currentIndex = possibilityMapIdToIndex[possibility.id];
-      const remainderIndex = possibilities.slice(currentIndex + 1).findIndex(p =>
-        p.orientation === orientation &&
-        (!consideredPlacement.row && !consideredPlacement.column || (p.row === consideredPlacement.row && p.column === consideredPlacement.column))
-      );
+      const remainderIndex = possibilities.slice(currentIndex + 1).findIndex(p => p.orientation === orientation);
 
       index = remainderIndex === -1 ? currentIndex : currentIndex + remainderIndex + 1;
 
@@ -39,20 +36,21 @@ export default (
       }
     }
     else {
+      const { row, column } = consideredPlacement.placement;
       const filteredPossibilities = possibilities.filter(p =>
         p.orientation === orientation &&
-        p.blocks.some(p => p.row === consideredPlacement.row && p.column === consideredPlacement.column));
+        p.blocks.some(p => p.row === row && p.column === column));
 
       if (filteredPossibilities.length === 0) {
         const currentIndex = possibilityMapIdToIndex[possibility.id];
         const possibilitiesFilteredWithJustRowColumnFromCurrent = possibilities.slice(currentIndex + 1).filter(p =>
-          p.blocks.some(p => p.row === consideredPlacement.row && p.column === consideredPlacement.column));
+          p.blocks.some(p => p.row === row && p.column === column));
 
         if (possibilitiesFilteredWithJustRowColumnFromCurrent.length > 0) {
           index = possibilityMapIdToIndex[possibilitiesFilteredWithJustRowColumnFromCurrent[0].id];
         } else {
           const possibilitiesFilteredWithJustRowColumn = possibilities.filter(p =>
-            p.blocks.some(p => p.row === consideredPlacement.row && p.column === consideredPlacement.column));
+            p.blocks.some(p => p.row === row && p.column === column));
           if (possibilitiesFilteredWithJustRowColumn.length > 0) {
             index = possibilityMapIdToIndex[possibilitiesFilteredWithJustRowColumn[0].id];
           } else {

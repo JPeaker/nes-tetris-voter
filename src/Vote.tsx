@@ -11,73 +11,49 @@ import { Col, Container, Row } from 'react-bootstrap';
 import selectNextOrientation from './selectNextOrientation';
 
 export type ConsideredPlacement = {
-  row?: RowIndex,
-  column?: ColumnIndex,
+  placement?: { row: RowIndex, column: ColumnIndex },
   orientation?: Orientation,
-  index?: number;
+  index: number;
 };
 
 interface VoteProps {
   board: Board,
-  voteFor: (possibility: Possibility | null) => void,
+  voteFor: (possibility: Possibility | null) => Promise<void>,
   votedFor: Possibility | null
 };
 
 function Vote({ board, voteFor, votedFor }: VoteProps) {
-  const [consideredPlacement, setConsideredPlacement] = useState<ConsideredPlacement>({});
+  const [consideredPlacement, setConsideredPlacement] = useState<ConsideredPlacement>({ index: 0 });
   const [showVote, setShowVote] = useState<boolean>(false);
+  const [justVoted, setJustVoted] = useState<boolean>(false);
 
   const voteSortedPossibilities = [...board.possibilities].sort((p1, p2) => p2.votes - p1.votes);
-  const possibility = board.possibilities[consideredPlacement.index !== undefined ? consideredPlacement.index : 0];
+  const consideredProbabilityList = votedFor ? voteSortedPossibilities : board.possibilities;
+
+  const possibility = consideredProbabilityList[consideredPlacement.index !== undefined ? consideredPlacement.index : 0];
   const removeConsiderations = () => {
-    setConsideredPlacement({ row: undefined, column: undefined, orientation: undefined, index: undefined });
+    setConsideredPlacement({ placement: undefined, orientation: undefined, index: 0 });
   };
 
-  const nextOrientation = selectNextOrientation(possibility, board.possibilities, consideredPlacement, setConsideredPlacement);
+  const selectPossibility = (possibility: Possibility) => {
+    const index = consideredProbabilityList.findIndex(p => p.id === possibility.id);
+    setConsideredPlacement({ index });
+  }
+
+  if (justVoted && votedFor) {
+    selectPossibility(votedFor);
+    setJustVoted(false);
+  }
+
+  const nextOrientation = selectNextOrientation(possibility, consideredProbabilityList, consideredPlacement, setConsideredPlacement);
   const arrowup = () => {
     const index = consideredPlacement.index === undefined ? 0 : consideredPlacement.index === 0 ? 0 : consideredPlacement.index - 1;
-    setConsideredPlacement({ row: undefined, column: undefined, orientation: undefined, index });
-  };
-
-  const arrowupVoted = () => {
-    if (!possibility) {
-      return;
-    }
-
-    let index = voteSortedPossibilities.findIndex(p => p.id === possibility.id) - 1;
-
-    if (index < 0) {
-      index = 0;
-    }
-
-    const consider = voteSortedPossibilities[index];
-    const originalIndex = board.possibilities.findIndex(p => p.id === consider.id);
-    setConsideredPlacement({ index: originalIndex });
+    setConsideredPlacement({ placement: undefined, orientation: undefined, index });
   };
 
   const arrowdown = () => {
     const index = consideredPlacement.index === undefined ? 1 : consideredPlacement.index === board.possibilities.length - 1 ? board.possibilities.length - 1 : consideredPlacement.index + 1;
-    setConsideredPlacement({ row: undefined, column: undefined, orientation: undefined, index });
-  };
-
-  const arrowdownVoted = () => {
-    if (!possibility) {
-      return;
-    }
-
-    let index = voteSortedPossibilities.findIndex(p => p.id === possibility.id) + 1;
-
-    if (index >= voteSortedPossibilities.length - 1) {
-      index = voteSortedPossibilities.length - 1;
-    }
-
-    const consider = voteSortedPossibilities[index];
-    const originalIndex = board.possibilities.findIndex(p => p.id === consider.id);
-    setConsideredPlacement({ index: originalIndex });
-  };
-
-  const vote = (possibility: Possibility | null) => {
-    voteFor(possibility);
+    setConsideredPlacement({ placement: undefined, orientation: undefined, index });
   };
 
   const setFirstConsideredRowColumn = (row: RowIndex, column: ColumnIndex) => {
@@ -90,28 +66,32 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
       index = board.possibilities.findIndex(p => p.blocks.some(block => block.row === row && block.column === column));
     }
 
-    setConsideredPlacement({ ...consideredPlacement, row, column, index });
+    setConsideredPlacement({ ...consideredPlacement, placement: { row, column }, index });
   }
 
-  const onEnter = () => {
+  const onEnter = async () => {
     if (!possibility) {
       return;
     }
 
     if (showVote) {
-      vote(possibility);
+      const votedId = votedFor && votedFor.id;
+      const possibilityId = possibility && possibility.id;
+      await voteFor(votedId === possibilityId ? null : possibility);
+      setJustVoted(true);
     }
 
     setShowVote(!showVote);
-  }
+  };
+
   const handler = (event: React.KeyboardEvent<HTMLDivElement>) => inputHandler({
     Escape: showVote ? () => setShowVote(false) : removeConsiderations,
     w: !votedFor ? nextOrientation(Orientation.Up) : undefined,
     a: !votedFor ? nextOrientation(Orientation.Left) : undefined,
     s: !votedFor ? nextOrientation(Orientation.Down) : undefined,
     d: !votedFor ? nextOrientation(Orientation.Right) : undefined,
-    arrowup: !votedFor ? arrowup : arrowupVoted,
-    arrowdown: !votedFor ? arrowdown : arrowdownVoted,
+    arrowup,
+    arrowdown,
     enter: onEnter,
   }, event);
 
@@ -121,7 +101,7 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
     if (ref.current) {
       ref.current.focus();
     }
-  }, []);
+  });
 
   return (
     <Container tabIndex={-1} style={{ outline: 'none' }} ref={ref} onKeyDown={handler} fluid>
@@ -139,19 +119,18 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
         </Col>
         <Col xs={6}>
           <PossibilityList
-            possibilities={board.possibilities}
-            voteSortedPossibilities={voteSortedPossibilities}
+            possibilities={consideredProbabilityList}
             selected={possibility}
             votedFor={votedFor}
             showVote={() => setShowVote(true)}
-            setSelected={(index: number) => setConsideredPlacement({ row: undefined, column: undefined, orientation: undefined, index })}
+            setPossibility={(possibility: Possibility) => selectPossibility(possibility)}
           />
         </Col>
       </Row>
       <ConfirmVote
         description={possibility ? describer(possibility) : undefined}
         show={showVote}
-        vote={() => vote(possibility)}
+        vote={onEnter}
         cancel={() => setShowVote(false)}
       />
     </Container>

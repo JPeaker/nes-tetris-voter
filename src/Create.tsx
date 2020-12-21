@@ -62,7 +62,7 @@ function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece
   return (
     <Container tabIndex={-1} style={{ outline: 'none' }} ref={ref} onKeyDown={handler} fluid>
       <Row className="flex-row fluid align-items-center justify-content-center mt-5">
-        <Col xs={2}>
+        <Col xs={10}>
           <div className="tetris-grid-wrapper">
             <img className="current-text" src={current} />
             <CreateGrid state={state} grid={grid} setGrid={setGrid} />
@@ -76,8 +76,8 @@ function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece
           />
         </Col>
         <Col xs={2}>
-          <PieceSelect className="current-piece-select" piece={currentPiece} setPiece={setCurrentPiece} />
-          <PieceSelect className="next-piece-select" piece={nextPiece} setPiece={setNextPiece} />
+          <PieceSelect piece={currentPiece} setPiece={setCurrentPiece} />
+          <PieceSelect piece={nextPiece} setPiece={setNextPiece} />
         </Col>
       </Row>
       <Row>

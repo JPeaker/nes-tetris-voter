@@ -62,18 +62,23 @@ function VotePage() {
   if (loading) {
     return <span>Loading a scenario...</span>;
   }
+
   if (data) {
-    const vote = (newVoteFor: Possibility | null) => {
+    const vote = async (newVoteFor: Possibility | null) => {
+      if (votedFor === newVoteFor) {
+        return;
+      }
+
       if (votedFor) {
-        removeVote({ variables: { id: votedFor.id }});
+        await removeVote({ variables: { id: votedFor.id }});
       }
 
       if (newVoteFor) {
-        addVote({ variables: { id: newVoteFor.id }})
+        await addVote({ variables: { id: newVoteFor.id }})
       }
 
       setVotedFor(newVoteFor);
-      refetch!({ id: data.board.id });
+      await refetch!({ id: data.board.id });
     };
 
     return <Vote board={data.board} voteFor={vote} votedFor={votedFor} />
