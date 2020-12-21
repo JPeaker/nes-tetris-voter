@@ -106,3 +106,7 @@
 .btn-dark:active .hidden {
   background-color: #23272b;
 }
+
+.possibility-item {
+  vertical-align: -webkit-baseline-middle;
+}

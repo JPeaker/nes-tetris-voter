@@ -105,9 +105,9 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
 
   return (
     <Container tabIndex={-1} style={{ outline: 'none' }} ref={ref} onKeyDown={handler} fluid>
-      <Row className="flex-row fluid align-items-center justify-content-center mt-5">
-        <Col xs={2} />
-        <Col xs={3}>
+      <Row className="flex-row fluid align-items-center justify-content-center mt-4">
+        <Col xs={4} className="offset-md-2">
+          <h4 className="ml-2">Grid Preview</h4>
           <ChoiceGrid
             grid={board.board}
             possibility={possibility}
@@ -117,15 +117,21 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
             onClick={() => setShowVote(true)}
           />
         </Col>
-        <Col xs={6}>
-          <PossibilityList
-            possibilities={consideredProbabilityList}
-            selected={possibility}
-            votedFor={votedFor}
-            showVote={() => setShowVote(true)}
-            setPossibility={(possibility: Possibility) => selectPossibility(possibility)}
-          />
+        <Col xs={4}>
+          <h4>Placement List</h4>
+          <p>Select the placement in this list that you think is the best move</p>
+          {
+            votedFor
+              ? 'VOTED'
+              : <PossibilityList
+                possibilities={board.possibilities}
+                selected={possibility}
+                showVote={() => setShowVote(true)}
+                setPossibility={(possibility: Possibility) => selectPossibility(possibility)}
+              />
+          }
         </Col>
+        <Col xs={2} />
       </Row>
       <ConfirmVote
         description={possibility ? describer(possibility) : undefined}

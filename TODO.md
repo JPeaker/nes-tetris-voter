@@ -1,8 +1,6 @@
 # TODO List
 
 ## During Christmas break
-Move vote to right-align
-Nav bar changes
 Section descriptors
 Show "Vote Summary" card
 Revamp create page
@@ -27,21 +25,4 @@ After voting and removing the vote, cannot set preferred orientation
 ## Miscellaneous
 
 1. Credits page
-2. intro.js guide
-
-# Done
-
-## Front-end
-
-1. Design page for showing a scenario
-2. Show all possible moves in some good way
-3. Allow selecting a move
-4. Add scenario selection
-5. Allow voting
-
-## Back-end
-
-1. Set up database
-2. Set up GraphQL
-3. Set up schema to allow /graphql endpoint
-4. Hook up front-end
+2. Shortcuts expl.

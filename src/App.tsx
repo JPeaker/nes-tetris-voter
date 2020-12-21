@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import VotePage from './VotePage';
 import CreatePage from './CreatePage';
 import { Switch, Route, Link, useHistory } from 'react-router-dom';
-import { Container, Row } from 'react-bootstrap';
+import { Button, Container, Form, FormControl, Nav, Navbar, Row } from 'react-bootstrap';
 
 function App() {
   const [search, setSearch] = useState<string>('');
@@ -18,51 +18,40 @@ function App() {
 
   const menuItems = [
     { paths: ['/', '/vote'], name: 'Vote' },
-    { paths: ['/create'], name: 'Create' },
+    { paths: ['/create'], name: 'Create New' },
   ]
   return (
     <Container className="p-0" fluid onKeyDown={focusSearch}>
       <Row noGutters xs={1}>
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav mr-auto">
-              {
+        <Navbar bg="dark" variant="dark">
+          <Navbar.Brand href="/vote">
+            <img src="/logo.png" className="mr-sm-2" style={{ width: '5rem' }} />{' '}
+            NES Tetris Voter
+          </Navbar.Brand>
+          <Navbar.Collapse>
+            <Nav className="mr-auto">
+            {
                 menuItems.map(item => (
-                  <li key={item.name} className={`nav-item ${item.paths.includes(history.location.pathname) ? 'active' : ''}`}>
-                    <Link className="nav-link" to={item.paths.reverse()[0]}>{ item.name }</Link>
-                  </li>
+                  <Nav.Link key={item.name} href={item.paths.reverse()[0]}>{item.name}</Nav.Link>
                 ))
               }
-            </ul>
-            <form className="form-inline my-2 my-lg-0">
-              <input
-                className="form-control mr-sm-2"
+            </Nav>
+            <Form inline>
+              <FormControl
                 type="search"
                 placeholder="Search"
                 aria-label="Search by ID"
                 value={search}
                 ref={searchRef}
                 onChange={event => setSearch(event.currentTarget.value)}
+                className="mr-sm-2"
               />
               <Link to={`/vote?id=${search}`}>
-                <button className="btn btn-outline-success my-2 my-sm-0" type="submit">
-                  Go
-                </button>
+                <Button variant="outline-success" type="submit">Go</Button>
               </Link>
-            </form>
-          </div>
-        </nav>
+            </Form>
+          </Navbar.Collapse>
+        </Navbar>
       </Row>
       <Row noGutters xs={1} className="p-0">
         <Switch>

@@ -11,7 +11,7 @@ function CreateGrid({ state, grid, setGrid }: { state: CreateState, grid: Grid, 
     nearInvisible: state !== CreateState.TOGGLE_HOLES && !!hoverBlock && row >= hoverBlock.row && column === hoverBlock.column,
     slightlyHidden: !!hoverBlock && (
       state === CreateState.CHOOSE_COLUMNS ? row >= hoverBlock.row && column === hoverBlock.column :
-      state === CreateState.TOGGLE_HOLES ? hoverBlock.row === row && hoverBlock.column === column && !!grid[row][column] :
+      state === CreateState.TOGGLE_HOLES ? hoverBlock.row === row && hoverBlock.column === column :
       false
     ),
     onMouseEnter: () => setHoverBlock({ row, column }),

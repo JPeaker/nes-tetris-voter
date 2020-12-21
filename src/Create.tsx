@@ -61,7 +61,7 @@ function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece
       undefined;
   return (
     <Container tabIndex={-1} style={{ outline: 'none' }} ref={ref} onKeyDown={handler} fluid>
-      <Row className="flex-row fluid align-items-center justify-content-center mt-5">
+      <Row className="flex-row fluid align-items-center justify-content-center mt-4">
         <Col xs={10}>
           <div className="tetris-grid-wrapper">
             <img className="current-text" src={current} />
