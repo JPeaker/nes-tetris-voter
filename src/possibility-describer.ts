@@ -13,7 +13,7 @@ interface DetailMap {
 }
 
 const flatIn: DetailMap = {
-  [Piece.I]: [Orientation.Left, Orientation.Right],
+  [Piece.I]: [Orientation.Up, Orientation.Down],
   [Piece.J]: [Orientation.Up],
   [Piece.L]: [Orientation.Up],
   [Piece.T]: [Orientation.Up],
@@ -23,7 +23,7 @@ const flatIn: DetailMap = {
 };
 
 const uprightIn: DetailMap = {
-  [Piece.I]: [],
+  [Piece.I]: [Orientation.Left, Orientation.Right],
   [Piece.J]: [Orientation.Left],
   [Piece.L]: [Orientation.Right],
   [Piece.T]: [],
