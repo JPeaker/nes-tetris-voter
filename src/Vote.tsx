@@ -101,7 +101,7 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
     if (ref.current) {
       ref.current.focus();
     }
-  });
+  }, [true]);
 
   return (
     <Container tabIndex={-1} style={{ outline: 'none' }} ref={ref} onKeyDown={handler} fluid>
