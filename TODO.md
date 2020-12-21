@@ -1,5 +1,17 @@
 # TODO List
 
+## During Christmas break
+Move vote to right-align
+Nav bar changes
+Section descriptors
+Show "Vote Summary" card
+Revamp create page
+Hover on toggle block
+Allow "See all results" on Vote Summary
+List of top games page
+"Flag" possibilities
+After voting and removing the vote, cannot set preferred orientation
+
 ## Front-end
 
 1. Allow scenario creation

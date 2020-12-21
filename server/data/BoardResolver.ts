@@ -10,8 +10,11 @@ import { Possibility } from './entity/Possibility';
 export class BoardResolver {
   @FieldResolver(() => [RelatedPossibility])
   possibilities(@Root() board: Board) {
-    // Sort first top to bottom, then left to right
-    return board.possibilities.sort((p1, p2) => p2.row() > p1.row() ? -1 : p2.column() > p1.column() ? -1 : 1);
+    return board.possibilities.sort((p1, p2) =>
+      p1.column() - p2.column() ||
+      p1.row() - p2.row() ||
+      p1.orientation() - p2.orientation() ||
+      p1.votes - p2.votes);
   }
 
   @Query(() => [Board])
