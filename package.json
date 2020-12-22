@@ -29,8 +29,9 @@
   "homepage": ".",
   "dependencies": {
     "@apollo/client": "^3.2.9",
-    "@types/graphql": "^14.5.0",
+    "@primer/octicons-react": "^11.2.0",
     "@types/cors": "^2.8.8",
+    "@types/graphql": "^14.5.0",
     "@types/pg": "^7.14.7",
     "@types/react-bootstrap": "^0.32.25",
     "@types/react-lazyload": "^3.0.0",

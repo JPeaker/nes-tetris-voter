@@ -1,7 +1,6 @@
 # TODO List
 
 ## During Christmas break
-Show "Vote Summary" card
 Revamp create page
 Loading screen
 404 Screen

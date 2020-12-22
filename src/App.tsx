@@ -1,13 +1,13 @@
 import React, { useRef, useState } from 'react';
 import VotePage from './VotePage';
 import CreatePage from './CreatePage';
-import { Switch, Route, Link, useHistory } from 'react-router-dom';
+import { Switch, Route, Link } from 'react-router-dom';
 import { Button, Container, Form, FormControl, Nav, Navbar, Row } from 'react-bootstrap';
+import { SearchIcon } from '@primer/octicons-react';
 
 function App() {
   const [search, setSearch] = useState<string>('');
   const searchRef = useRef<HTMLInputElement>(null);
-  const history = useHistory();
 
   const focusSearch = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === '/' && searchRef.current) {
@@ -47,7 +47,7 @@ function App() {
                 className="mr-sm-2"
               />
               <Link to={`/vote?id=${search}`}>
-                <Button variant="outline-success" type="submit">Go</Button>
+                <Button variant="outline-success" type="submit"><SearchIcon size={20} /></Button>
               </Link>
             </Form>
           </Navbar.Collapse>

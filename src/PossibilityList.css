@@ -120,3 +120,11 @@
   background-color: #ddd !important;
   cursor: pointer;
 }
+
+.more-results-icon {
+  transform: rotate(90deg);
+  display: block !important;
+  margin: auto;
+  fill: #bbb;
+  margin-bottom: 4px;
+}

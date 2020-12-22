@@ -5,6 +5,7 @@ import { Possibility } from './CommonModels';
 import { Grid } from 'nes-tetris-representation';
 import TopVotedCard from './TopVotedCard';
 import { Container } from 'react-bootstrap';
+import { KebabHorizontalIcon } from '@primer/octicons-react';
 
 interface VoteSummaryProps {
   grid: Grid;
@@ -28,9 +29,7 @@ function VoteSummary({ grid, possibilities, votedFor, previewedPossibility, chan
   return <Container style={{ padding: 0 }}>
     {cardsToShow.map((value, index) => {
       let addition = index === 3
-        ? <svg xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', margin: 'auto', marginBottom: '4px' }} width="16" height="16" fill="#ccc"viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-        </svg>
+        ? <KebabHorizontalIcon className="more-results-icon" size={24} />
         : undefined;
 
       return <>
