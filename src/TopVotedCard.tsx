@@ -53,7 +53,7 @@ function TopVotedCard({
   >
     <Card.Body>
       <Row>
-        <Col xs={1} className="pr-0">
+        <Col xs={1} className="pl-2 pr-0">
           <h5>#{rank}</h5>
         </Col>
         { dense ? undefined : <Col xs={2}>
