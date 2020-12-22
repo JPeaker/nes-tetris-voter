@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import _ from 'lodash';
 import { CreateToolType } from './CreateTool';
 
-function CreateGrid({ state, grid, setGrid }: { state: CreateToolType | null, grid: Grid, setGrid: (grid: Grid) => void }) {
+function CreateGrid({ state, setState, grid, setGrid }: { state: CreateToolType | null, setState: (state: CreateToolType) => void, grid: Grid, setGrid: (grid: Grid) => void }) {
   const [hoverBlock, setHoverBlock] = useState<{ row: RowIndex, column: ColumnIndex } | null>(null);
 
   const getBlockProps = (row: RowIndex, column: ColumnIndex) => ({
@@ -14,8 +14,13 @@ function CreateGrid({ state, grid, setGrid }: { state: CreateToolType | null, gr
       state === CreateToolType.TOGGLE_BLOCKS ? hoverBlock.row === row && hoverBlock.column === column :
       false
     ),
-    onMouseEnter: () => setHoverBlock({ row, column }),
+    onMouseEnter: () => state !== null && setHoverBlock({ row, column }),
     onClick: () => {
+      if (state === null) {
+        setState(CreateToolType.ADD_COLUMNS);
+        return;
+      }
+
       const newGrid = _.cloneDeep(grid);
 
       if (state === CreateToolType.ADD_COLUMNS) {
@@ -36,8 +41,9 @@ function CreateGrid({ state, grid, setGrid }: { state: CreateToolType | null, gr
 
   const classes = [
     'tetris-grid-create',
-    state !== null ? 'create-border' : '',
+    'create-border',
     grid.some(row => row.some(block => block !== BlockValue.EMPTY)) ? 'complete' : '',
+    state !== null ? 'active' : '',
   ];
 
   return (

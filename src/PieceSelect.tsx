@@ -1,30 +1,24 @@
 import { TetrisGrid } from 'nes-tetris-components';
-import { getPieceGrid, Piece, PieceList } from 'nes-tetris-representation';
+import { getPieceGrid, Grid, Piece } from 'nes-tetris-representation';
 import React from 'react';
-import { ButtonGroup, Dropdown } from 'react-bootstrap';
 
-function PieceSelect({ piece, setPiece, className }: { piece: Piece, setPiece: (piece: Piece) => void, className?: string }) {
-  const onSelect = (label: string | null) => setPiece(PieceList.find(p => p.label === label)!.value);
-  return (
-    <Dropdown size="lg" as={ButtonGroup} onSelect={onSelect} className={`piece-select-dropdown ${className || ''}`} variant="dark">
-      <Dropdown.Toggle variant="dark" className="piece-select-toggle">
-        <TetrisGrid grid={getPieceGrid(piece)} blockSizeInRem={1.5} hideTopTwoRows={false} />
-      </Dropdown.Toggle>
-      <Dropdown.Menu>
-        {
-          PieceList.map(({ value, label }) =>
-            <Dropdown.Item variant="dark" eventKey={label} className="piece-select-item">
-              <TetrisGrid
-                className="tetris-grid"
-                grid={getPieceGrid(value)}
-                blockSizeInRem={1.5}
-                hideTopTwoRows={false}
-              />
-            </Dropdown.Item>)
-        }
-      </Dropdown.Menu>
-    </Dropdown>
-  );
+function PieceSelect({ piece, className, active, onClick }: { piece: Piece | null, active: boolean, className: string, onClick: () => void }) {
+  const classes = [
+    className,
+    'create-border',
+    piece !== null && !active ? 'complete' : undefined,
+    active ? 'active' : undefined,
+  ]
+
+  const emptyPiece = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ]
+
+  return <div className={classes.filter(c => !!c).join(' ')} onClick={onClick}>
+    <TetrisGrid className="piece-select-grid" grid={piece !== null ? getPieceGrid(piece) : emptyPiece as Grid} hideTopTwoRows={false} blockSizeInRem={1.5}/>
+  </div>;
 }
 
 export default PieceSelect;

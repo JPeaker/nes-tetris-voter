@@ -34,7 +34,7 @@ function VoteSummary({ grid, possibilities, votedFor, previewedPossibility, chan
       ? <KebabHorizontalIcon className="more-results-icon" size={24} />
       : undefined;
 
-    return <>
+    return <div key={value.possibility.id}>
       { addition }
       <TopVotedCard
         key={value.possibility.id}
@@ -48,7 +48,7 @@ function VoteSummary({ grid, possibilities, votedFor, previewedPossibility, chan
         changeVote={changeVote}
         dense={allResults || (!votedInTopThree && value.possibility.id === votedFor.id)}
       />
-    </>
+    </div>
   });
 
   return <Container style={{ padding: 0 }}>

@@ -39,7 +39,7 @@ function ChoiceGrid({ grid, possibility, nextPiece, setConsideredRowColumn, onCl
         className="tetris-grid-vote"
         getBlockProps={getBlockProps}
       />
-      <TetrisGrid grid={getPieceGrid(nextPiece)} hideTopTwoRows={false} blockSizeInRem={1.5} className={`next-piece next-piece-${pieceLabel}`} />
+      <TetrisGrid grid={getPieceGrid(nextPiece)} hideTopTwoRows={false} blockSizeInRem={1.5} className={`next-piece-vote next-piece-${pieceLabel}`} />
     </div>
   );
 }

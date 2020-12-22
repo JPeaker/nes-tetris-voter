@@ -13,7 +13,7 @@
   margin-left: 2.0625rem;
 }
 
-.next-piece {
+.next-piece-vote {
   float: initial;
 }
 
@@ -73,16 +73,20 @@
   background-color: #f8f9fa;
 }
 
-.current-piece-select {
-  float: right;
-  bottom: 13rem;
-  right: 0;
+.current-piece {
+  left: 25.25rem;
+  top: -40.75rem;
+  position: relative;
+  height: 9rem;
+  width: 9rem;
 }
 
-.next-piece-select {
-  float: right;
-  bottom: 4rem;
-  right: 5rem;
+.next-piece-create {
+  left: 25.875rem;
+  top: -35.75rem;
+  position: relative;
+  height: 9.875rem;
+  width: 7.75rem;
 }
 
 .toggle-switch {
@@ -139,10 +143,15 @@
   border: 3px solid red;
   box-sizing: content-box;
   border-radius: 3px;
+  cursor: pointer;
 }
 
 .create-border.complete {
   border-color: green;
+}
+
+.create-border.active {
+  border-color: orange;
 }
 
 .create-tool {
@@ -155,7 +164,8 @@
 }
 
 .create-tool.selected,
-.create-tool.selected:hover {
+.create-tool.selected:hover,
+.create-tool:active {
   background-color: #ccc;
 }
 
@@ -163,6 +173,9 @@
   background-color: #ddd;
 }
 
-.create-tool:active {
-  background-color: #ccc;
+.piece-select-grid {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
