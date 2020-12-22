@@ -5,43 +5,40 @@ import inputHandler from './input-handler';
 import _ from 'lodash';
 import CreateGrid from './CreateGrid';
 import current from './current-text.png';
-import PieceSelect from './PieceSelect';
+import { emptyGrid } from './emptyGrid';
+import CreateTool, { CreateToolType } from './CreateTool';
 
-export enum CreateState {
-  CHOOSE_COLUMNS,
-  TOGGLE_HOLES,
+export enum CreateMode {
+  SET_GRID,
+  SELECT_CURRENT_PIECE,
+  SELECT_NEXT_PIECE,
 };
 
-const emptyGrid: Grid = [
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-];
+const mapToolToMode = (tool: CreateToolType) => {
+  switch (tool) {
+    case CreateToolType.ADD_COLUMNS:
+    case CreateToolType.TOGGLE_BLOCKS:
+    case CreateToolType.UPLOAD:
+      return CreateMode.SET_GRID;
+    default:
+      return CreateMode.SET_GRID;
+  }
+}
+
+const getDefaultTool = (mode: CreateMode) => {
+  switch (mode) {
+    case CreateMode.SET_GRID:
+      return CreateToolType.ADD_COLUMNS;
+    default:
+      return CreateToolType.ADD_COLUMNS;
+  }
+};
 
 function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece, nextPiece: Piece) => void }) {
-  const [state, setState] = useState<CreateState>(CreateState.CHOOSE_COLUMNS);
+  const [tool, setTool] = useState<CreateToolType>(getDefaultTool(CreateMode.SET_GRID));
   const [grid, setGrid] = useState<Grid>(emptyGrid);
-  const [currentPiece, setCurrentPiece] = useState<Piece>(Piece.T);
-  const [nextPiece, setNextPiece] = useState<Piece>(Piece.T);
+  const [currentPiece, setCurrentPiece] = useState<Piece | null>(null);
+  const [nextPiece, setNextPiece] = useState<Piece | null>(null);
 
   const handler = (event: React.KeyboardEvent<HTMLDivElement>) => inputHandler({
   }, event);
@@ -54,34 +51,28 @@ function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece
     }
   }, []);
 
-  const toggleCreateGridState = () => state === CreateState.CHOOSE_COLUMNS ?
-    setState(CreateState.TOGGLE_HOLES) :
-    state === CreateState.TOGGLE_HOLES ?
-      setState(CreateState.CHOOSE_COLUMNS) :
-      undefined;
+  const setGridTools = [
+    CreateToolType.ADD_COLUMNS,
+    CreateToolType.TOGGLE_BLOCKS,
+    CreateToolType.UPLOAD,
+  ];
+
   return (
     <Container tabIndex={-1} style={{ outline: 'none' }} ref={ref} onKeyDown={handler} fluid>
-      <Row className="flex-row fluid align-items-center justify-content-center mt-4">
-        <Col xs={10}>
+      <Row>
+        <Col xs={4}>
           <div className="tetris-grid-wrapper">
             <img className="current-text" src={current} />
-            <CreateGrid state={state} grid={grid} setGrid={setGrid} />
+            <CreateGrid state={mapToolToMode(tool) === CreateMode.SET_GRID ? tool : null} grid={grid} setGrid={setGrid} />
           </div>
-          <Form.Check
-            type="switch"
-            id="toggle-switch"
-            className="toggle-switch"
-            onClick={toggleCreateGridState}
-            label={state === CreateState.CHOOSE_COLUMNS ? 'Toggle holes' : 'Pick columns'}
-          />
         </Col>
-        <Col xs={2}>
-          <PieceSelect piece={currentPiece} setPiece={setCurrentPiece} />
-          <PieceSelect piece={nextPiece} setPiece={setNextPiece} />
+        <Col xs={4}>
+          <h4>Tools</h4>
+          <Row>{setGridTools.map(variant => <Col xs={12}><CreateTool variant={variant} setTool={setTool} selected={variant === tool} /></Col>)}</Row>
         </Col>
       </Row>
       <Row>
-        <button onClick={() => createBoard(grid, currentPiece, nextPiece)}>Save</button>
+        <button onClick={() => currentPiece && nextPiece && createBoard(grid, currentPiece, nextPiece)}>Save</button>
       </Row>
     </Container>
   );

@@ -3,9 +3,14 @@
   border: 1px solid #aaa;
 }
 
-.tetris-grid {
+.tetris-grid-vote {
   padding-top: 1.625rem;
-  margin-left: 2.375rem;
+  margin-left: 2.125rem;
+}
+
+.tetris-grid-create {
+  margin-top: 0.125rem;
+  margin-left: 2.0625rem;
 }
 
 .next-piece {
@@ -58,8 +63,9 @@
 
 .current-text {
   width: 8rem;
-  margin-left: 26rem;
-  margin-top: 1.5rem;
+  position: relative;
+  top: 1.25rem;
+  left: 26rem;
 }
 
 .current-considered-possibility {
@@ -127,4 +133,36 @@
   margin: auto;
   fill: #bbb;
   margin-bottom: 4px;
+}
+
+.create-border {
+  border: 3px solid red;
+  box-sizing: content-box;
+  border-radius: 3px;
+}
+
+.create-border.complete {
+  border-color: green;
+}
+
+.create-tool {
+  width: 9rem;
+  height: 9rem;
+  text-align: center;
+  border: 2px solid #aaa;
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.create-tool.selected,
+.create-tool.selected:hover {
+  background-color: #ccc;
+}
+
+.create-tool:hover {
+  background-color: #ddd;
+}
+
+.create-tool:active {
+  background-color: #ccc;
 }
