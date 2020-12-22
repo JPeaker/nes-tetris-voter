@@ -1,10 +1,11 @@
 # TODO List
 
 ## During Christmas break
-Section descriptors
 Show "Vote Summary" card
 Revamp create page
-Hover on toggle block
+Loading screen
+404 Screen
+Get Icons working
 Allow "See all results" on Vote Summary
 List of top games page
 "Flag" possibilities

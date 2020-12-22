@@ -5,7 +5,7 @@
 
 .tetris-grid {
   padding-top: 1.625rem;
-  margin-left: 3.1rem;
+  margin-left: 2.375rem;
 }
 
 .next-piece {
@@ -13,7 +13,7 @@
 }
 
 .next-piece-I {
-  margin-left: 28rem;
+  margin-left: 27rem;
   margin-top: -19rem;
 }
 
@@ -109,4 +109,14 @@
 
 .possibility-item {
   vertical-align: -webkit-baseline-middle;
+}
+
+.top-voted-card-is-voted {
+  border-color: #343a40;
+  border-width: 2px;
+}
+
+.top-voted-card-is-previewed {
+  background-color: #ddd !important;
+  cursor: pointer;
 }

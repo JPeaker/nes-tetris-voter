@@ -9,6 +9,7 @@ import inputHandler from './input-handler';
 import describer from './possibility-describer';
 import { Col, Container, Row } from 'react-bootstrap';
 import selectNextOrientation from './selectNextOrientation';
+import VoteSummary from './VoteSummary';
 
 export type ConsideredPlacement = {
   placement?: { row: RowIndex, column: ColumnIndex },
@@ -117,20 +118,33 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
             onClick={() => setShowVote(true)}
           />
         </Col>
-        <Col xs={4}>
-          <h4>Placement List</h4>
-          <p>Select the placement in this list that you think is the best move</p>
-          {
-            votedFor
-              ? 'VOTED'
-              : <PossibilityList
+        {
+          votedFor ? (
+            <Col xs={4}>
+              <h4>Top Rated Placements</h4>
+              <p>Here are the top 3 placements according to other votes (and yours)</p>
+              <VoteSummary
+                possibilities={board.possibilities}
+                votedFor={votedFor}
+                grid={board.board}
+                previewedPossibility={possibility}
+                previewPossibility={selectPossibility}
+                changeVote={() => setShowVote(true)}
+              />
+            </Col>
+          ) : (
+            <Col xs={4}>
+              <h4>Placement List</h4>
+              <p>Select the placement in this list that you think is the best move</p>
+              <PossibilityList
                 possibilities={board.possibilities}
                 selected={possibility}
                 showVote={() => setShowVote(true)}
-                setPossibility={(possibility: Possibility) => selectPossibility(possibility)}
+                setPossibility={selectPossibility}
               />
-          }
-        </Col>
+            </Col>
+          )
+        }
         <Col xs={2} />
       </Row>
       <ConfirmVote
