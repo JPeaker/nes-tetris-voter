@@ -1,4 +1,4 @@
-import { BlockValue, Grid, Piece } from 'nes-tetris-representation';
+import { BlockValue, filledGrid, Grid, Piece } from 'nes-tetris-representation';
 import React, { useRef, useEffect, useState } from 'react';
 import { Card, Col, Container, Row, Button, CardColumns } from 'react-bootstrap';
 import inputHandler from './input-handler';
@@ -145,8 +145,90 @@ function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece
   const [grid, setGrid] = useState<Grid>(emptyGrid);
   const [currentPiece, setCurrentPiece] = useState<Piece | null>(null);
   const [nextPiece, setNextPiece] = useState<Piece | null>(null);
+  const [focusedColumn, focusOnColumn] = useState<number | null>(null);
 
+  const inputFocusColumn = (column: number) => () => {
+    if (column >= 0 && column < 10) {
+      setTool(CreateToolType.ADD_COLUMNS);
+      focusOnColumn(column);
+    }
+  };
+
+  const increaseFocusedColumn = (count: number) => () => {
+    if (focusedColumn !== null) {
+      setTool(CreateToolType.ADD_COLUMNS);
+      const adjustedGrid = _.cloneDeep(grid);
+      let highestIndex = adjustedGrid.map(row => row[focusedColumn]).findIndex(block => block !== BlockValue.EMPTY);
+      if (highestIndex === -1) {
+        highestIndex = 22;
+      } else if (highestIndex <= 0) {
+        highestIndex = 1;
+      }
+
+      for (let i = highestIndex; i > Math.max(highestIndex - count, 0); i--) {
+        adjustedGrid[i - 1][focusedColumn] = filledGrid[i - 1][focusedColumn];
+      }
+      setGrid(adjustedGrid);
+    }
+  };
+
+  const decreaseFocusedColumn = (count: number) => () => {
+    if (focusedColumn !== null) {
+      setTool(CreateToolType.ADD_COLUMNS);
+      const adjustedGrid = _.cloneDeep(grid);
+      let highestIndex = adjustedGrid.map(row => row[focusedColumn]).findIndex(block => block !== BlockValue.EMPTY);
+      if (highestIndex === -1) {
+        highestIndex = 21;
+      }
+
+      for (let i = highestIndex; i < Math.min(highestIndex + count, 22); i++) {
+        adjustedGrid[i][focusedColumn] = BlockValue.EMPTY;
+      }
+
+      adjustedGrid[highestIndex][focusedColumn] = BlockValue.EMPTY;
+      setGrid(adjustedGrid);
+    }
+  };
+
+  const hasFullRow = grid.some(row => row.every(block => block !== BlockValue.EMPTY));
+  const canCreate = !hasFullRow && currentPiece !== null && nextPiece !== null;
+
+  const pieceHandler = (piece: Piece, currentTool: CreateToolType, nextTool: CreateToolType) => () => {
+    const mode = mapToolToMode(tool);
+    if (mode === CreateMode.SELECT_CURRENT_PIECE) {
+      setTool(currentTool);
+      setCurrentPiece(piece);
+    } else if (mode === CreateMode.SELECT_NEXT_PIECE) {
+      setTool(nextTool);
+      setNextPiece(piece);
+    }
+  };
   const handler = (event: React.KeyboardEvent<HTMLDivElement>) => inputHandler({
+    q: () => setTool(CreateToolType.ADD_COLUMNS),
+    w: () => setTool(CreateToolType.SELECT_CURRENT_T),
+    e: () => setTool(CreateToolType.SELECT_NEXT_T),
+    1: inputFocusColumn(0),
+    2: inputFocusColumn(1),
+    3: inputFocusColumn(2),
+    4: inputFocusColumn(3),
+    5: inputFocusColumn(4),
+    6: inputFocusColumn(5),
+    7: inputFocusColumn(6),
+    8: inputFocusColumn(7),
+    9: inputFocusColumn(8),
+    0: inputFocusColumn(9),
+    arrowup: increaseFocusedColumn(1),
+    pageup: increaseFocusedColumn(5),
+    arrowdown: decreaseFocusedColumn(1),
+    pagedown: decreaseFocusedColumn(5),
+    t: pieceHandler(Piece.T, CreateToolType.SELECT_CURRENT_T, CreateToolType.SELECT_NEXT_T),
+    i: pieceHandler(Piece.I, CreateToolType.SELECT_CURRENT_I, CreateToolType.SELECT_NEXT_I),
+    o: pieceHandler(Piece.O, CreateToolType.SELECT_CURRENT_O, CreateToolType.SELECT_NEXT_O),
+    s: pieceHandler(Piece.S, CreateToolType.SELECT_CURRENT_S, CreateToolType.SELECT_NEXT_S),
+    z: pieceHandler(Piece.Z, CreateToolType.SELECT_CURRENT_Z, CreateToolType.SELECT_NEXT_Z),
+    j: pieceHandler(Piece.J, CreateToolType.SELECT_CURRENT_J, CreateToolType.SELECT_NEXT_J),
+    l: pieceHandler(Piece.L, CreateToolType.SELECT_CURRENT_L, CreateToolType.SELECT_NEXT_L),
+    enter: () => { canCreate && createBoard(grid, currentPiece!, nextPiece!) },
   }, event);
 
   const ref = useRef<HTMLDivElement>(null);
@@ -177,8 +259,7 @@ function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece
   }
 
   const toolRender = toolList.map(variant => <CreateTool key={variant} variant={variant} setTool={onToolSelect} selected={variant === tool} />);
-  const hasFullRow = grid.some(row => row.every(block => block !== BlockValue.EMPTY));
-  const canCreate = !hasFullRow && currentPiece !== null && nextPiece !== null;
+  const mode = mapToolToMode(tool);
   return (
     <Container tabIndex={-1} style={{ outline: 'none' }} ref={ref} onKeyDown={handler} fluid>
       <Row className="flex-row fluid align-items-center justify-content-center mt-4">
@@ -204,15 +285,15 @@ function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece
         <Col xs={4}>
           <div className="tetris-grid-wrapper">
             <img className="current-text" src={current} />
-            <PieceSelect className="current-piece" piece={currentPiece} active={mapToolToMode(tool) === CreateMode.SELECT_CURRENT_PIECE} onClick={() => setTool(CreateToolType.SELECT_CURRENT_T)} />
-            <PieceSelect className="next-piece-create" piece={nextPiece} active={mapToolToMode(tool) === CreateMode.SELECT_NEXT_PIECE} onClick={() => setTool(CreateToolType.SELECT_NEXT_T)} />
-            <CreateGrid state={mapToolToMode(tool) === CreateMode.SET_GRID ? tool : null} setState={setTool} grid={grid} setGrid={setGrid} />
-            <Button disabled={!canCreate} className="create-button" onClick={() => canCreate &&  createBoard(grid, currentPiece!, nextPiece!)}>Create</Button>
+            <PieceSelect className="current-piece" piece={currentPiece} active={mode === CreateMode.SELECT_CURRENT_PIECE} onClick={() => setTool(CreateToolType.SELECT_CURRENT_T)} />
+            <PieceSelect className="next-piece-create" piece={nextPiece} active={mode === CreateMode.SELECT_NEXT_PIECE} onClick={() => setTool(CreateToolType.SELECT_NEXT_T)} />
+            <CreateGrid state={mode === CreateMode.SET_GRID ? tool : null} setState={setTool} grid={grid} setGrid={setGrid} />
+            <Button disabled={!canCreate} className="create-button" onClick={() => canCreate && createBoard(grid, currentPiece!, nextPiece!)}>Create</Button>
           </div>
         </Col>
         <Col xs={3}>
           {
-            mapToolToMode(tool) !== CreateMode.SET_GRID
+            mode !== CreateMode.SET_GRID
             ? <CardColumns>{toolRender}</CardColumns>
             : toolRender
           }

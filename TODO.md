@@ -1,9 +1,10 @@
 # TODO List
 
 ## During Christmas break
-Shortcuts
 Analytics
 Local storage voting
+Credits page
+Shortcuts explanation
 
 ## Later
 List of top games page
@@ -18,8 +19,3 @@ List of top games page
 
 1. Add "all scenarios" limits
 2. Add user concept
-
-## Miscellaneous
-
-1. Credits page
-2. Shortcuts expl.
