@@ -25,7 +25,7 @@ export enum CreateToolType {
   SELECT_NEXT_L,
 };
 
-const getPieceContent = (piece: Piece) => ({ icon: <TetrisGrid grid={getPieceGrid(piece)} blockSizeInRem={1.75} hideTopTwoRows={false} />, label: '' });
+const getPieceContent = (piece: Piece) => ({ icon: <TetrisGrid grid={getPieceGrid(piece)} blockSizeInRem={1.75} hideTopTwoRows={false} transparentEmptyBlocks />, label: '' });
 const mapTypeToContent = (type: CreateToolType): { icon: JSX.Element, label: string } => {
   switch (type) {
     case CreateToolType.ADD_COLUMNS:
@@ -80,7 +80,7 @@ const mapTypeToContent = (type: CreateToolType): { icon: JSX.Element, label: str
 function CreateTool({ variant, selected = false, setTool }: { variant: CreateToolType, selected?: boolean, setTool: (tool: CreateToolType) => void }) {
   const content = mapTypeToContent(variant);
   return <Card className={`create-tool my-2 ${selected ? 'selected' : ''}`} onClick={() => setTool(variant)}>
-    <Card.Body>
+    <Card.Body className="center-tool">
       { content.icon }
       <Card.Title style={{ marginBottom: 0 }}>{ content.label }</Card.Title>
     </Card.Body>

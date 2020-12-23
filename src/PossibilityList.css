@@ -89,27 +89,10 @@
   width: 7.75rem;
 }
 
-.toggle-switch {
-  float: right;
-  bottom: 12.75rem;
-  right: -21rem;
-}
-
-.toggle-switch label {
-  color: white;
-}
-
-.piece-select-dropdown .tetris-grid {
-  display: inline-block;
-}
-
-.dropdown-toggle {
-  border: none;
-  width: 8rem;
-}
-
-.dropdown-toggle .hidden {
-  background-color: #343a40;
+.create-button {
+  position: relative;
+  left: 28rem;
+  bottom: 32rem;
 }
 
 .btn-dark:hover .hidden,
@@ -173,7 +156,8 @@
   background-color: #ddd;
 }
 
-.piece-select-grid {
+.piece-select-grid,
+.center-tool {
   position: absolute;
   top: 50%;
   left: 50%;
