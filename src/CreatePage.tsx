@@ -3,6 +3,8 @@ import { Grid, Piece } from 'nes-tetris-representation';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import Create from './Create';
+import ErrorPage from './ErrorPage';
+import Loading from './Loading';
 
 const CREATE_BOARD = gql`
   mutation createBoard($grid: [[Int!]!]!, $currentPiece: Int!, $nextPiece: Int!) {
@@ -22,15 +24,15 @@ function VotePage() {
   const [createBoard, { data, loading, error }] = useMutation<CreateBoardData>(CREATE_BOARD);
 
   if (error) {
-    return <span>{error.message}</span>
+    return <ErrorPage message={error.message} />;
   }
 
-  if (loading) {
-    return <span>Creating scenario...</span>;
-  }
+  if (data || loading) {
+    if (data) {
+      useHistory().push(`/vote?id=${data.createBoard.id}`);
+    }
 
-  if (data) {
-    useHistory().push(`/vote?id=${data.createBoard.id}`);
+    return <Loading message="Creating..." />
   }
 
   const createBoardArg = (grid: Grid, currentPiece: Piece, nextPiece: Piece) => createBoard({ variables: {

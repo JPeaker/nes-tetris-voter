@@ -62,7 +62,8 @@ function VotePage() {
   }
 
   if (loading) {
-    return <Loading />;
+    const message = query.get('id') === null ? 'Loading Random Scenario' : undefined;
+    return <Loading message={message} />;
   }
 
   if (data) {

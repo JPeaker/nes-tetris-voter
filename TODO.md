@@ -1,8 +1,11 @@
 # TODO List
 
 ## During Christmas break
-Loading screen
-404 Screen
+Shortcuts
+Analytics
+Local storage voting
+
+## Later
 List of top games page
 "Flag" possibilities
 

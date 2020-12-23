@@ -7,9 +7,11 @@ import ConfirmVote from './ConfirmVote';
 import ChoiceGrid from './ChoiceGrid';
 import inputHandler from './input-handler';
 import describer from './possibility-describer';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Container, Row, Button } from 'react-bootstrap';
 import selectNextOrientation from './selectNextOrientation';
 import VoteSummary from './VoteSummary';
+import { ShareAndroidIcon } from '@primer/octicons-react';
+import { Link, useLocation } from 'react-router-dom';
 
 export type ConsideredPlacement = {
   placement?: { row: RowIndex, column: ColumnIndex },
@@ -27,6 +29,8 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
   const [consideredPlacement, setConsideredPlacement] = useState<ConsideredPlacement>({ index: 0 });
   const [showVote, setShowVote] = useState<boolean>(false);
   const [justVoted, setJustVoted] = useState<boolean>(false);
+
+  const location = useLocation();
 
   const voteSortedPossibilities = [...board.possibilities].sort((p1, p2) => p2.votes - p1.votes);
   const consideredProbabilityList = votedFor ? voteSortedPossibilities : board.possibilities;
@@ -104,9 +108,34 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
     }
   }, [true]);
 
+  const [showCopied, setShowCopied] = useState<boolean>(false);
+  const copyToClipboard = () => {
+    const el = document.createElement('textarea');
+    el.value = `https://nes-tetris-voter.herokuapp.com${location.pathname}?id=${board.id}`;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    setShowCopied(true);
+  }
+
   return (
     <Container tabIndex={-1} style={{ outline: 'none' }} ref={ref} onKeyDown={handler} fluid>
-      <Row className="flex-row fluid align-items-center justify-content-center mt-4">
+      <Row className="mt-4 flex-row fluid align-items-center justify-content-center">
+        <Col xs={{ span: 4, offset: 4 }} style={{ textAlign: 'center' }}>
+          <h3>Board #{board.id}</h3>
+        </Col>
+        <Col xs={4} style={{ textAlign: 'right' }}>
+          <Link to="/vote">
+            <Button variant="outline-primary" style={{ marginRight: '4px' }}>New random scenario</Button>
+          </Link>
+          <Button variant="outline-primary" onClick={copyToClipboard}>
+            <span style={{ marginRight: '4px' }}>{ showCopied ? 'Copied!' : 'Copy link to clipboard' }</span>
+            { !showCopied ? <ShareAndroidIcon size={16} /> : undefined }
+          </Button>
+        </Col>
+      </Row>
+      <Row className="flex-row fluid align-items-center justify-content-center">
         <Col xs={4} className="offset-md-2">
           <h4 className="ml-2">Grid Preview</h4>
           <ChoiceGrid

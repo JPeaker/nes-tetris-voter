@@ -24,7 +24,7 @@ export class BoardResolver {
 
   @Query(() => Board)
   async board(@Arg('id', () => String, { nullable: true }) id?: string): Promise<Board | undefined> {
-    let adjustedId: string;
+    let adjustedId = id;
     if (id === undefined) {
       const slimBoard = await Board.getRepository().createQueryBuilder()
       .select('boards.id')
@@ -40,7 +40,7 @@ export class BoardResolver {
       adjustedId = slimBoard.id;
     }
 
-    const found = await Board.findOne(id);
+    const found = await Board.findOne(adjustedId);
 
     if (!found) {
       return found;
