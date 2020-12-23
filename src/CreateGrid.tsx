@@ -42,7 +42,7 @@ function CreateGrid({ state, setState, grid, setGrid }: { state: CreateToolType 
   const classes = [
     'tetris-grid-create',
     'create-border',
-    'complete',
+    grid.some(row => row.every(block => block !== BlockValue.EMPTY)) ? '' : 'complete',
     state !== null ? 'active' : '',
   ];
 

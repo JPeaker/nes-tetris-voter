@@ -9,7 +9,7 @@
 }
 
 .tetris-grid-create {
-  margin-top: 0.125rem;
+  margin-top: -19.75rem;
   margin-left: 2.0625rem;
 }
 
@@ -75,7 +75,7 @@
 
 .current-piece {
   left: 25.25rem;
-  top: -40.75rem;
+  top: -0.25rem;
   position: relative;
   height: 9rem;
   width: 9rem;
@@ -83,7 +83,7 @@
 
 .next-piece-create {
   left: 25.875rem;
-  top: -35.75rem;
+  top: 4.75rem;
   position: relative;
   height: 9.875rem;
   width: 7.75rem;
@@ -91,8 +91,8 @@
 
 .create-button {
   position: relative;
-  left: 28rem;
-  bottom: 32rem;
+  left: 27.75rem;
+  bottom: 11.5rem;
 }
 
 .btn-dark:hover .hidden,
@@ -157,9 +157,31 @@
 }
 
 .piece-select-grid,
-.center-tool {
+.center-tool,
+.upload-button-wrapper input {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.upload-cropper {
+  height: 40rem;
+  width: 20rem;
+}
+
+.modal-dialog {
+  max-width: 44rem;
+  max-height: 40rem;
+}
+
+.upload-button-wrapper {
+  text-align: center;
+  outline: 2px dashed #92b0b3;
+  outline-offset: -10px;
+  height: 100%;
+}
+
+.upload-button-wrapper input {
+  width: 12rem;
 }
