@@ -29,6 +29,7 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
   const [consideredPlacement, setConsideredPlacement] = useState<ConsideredPlacement>({ index: 0 });
   const [showVote, setShowVote] = useState<boolean>(false);
   const [justVoted, setJustVoted] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const location = useLocation();
 
@@ -75,14 +76,16 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
   }
 
   const onEnter = async () => {
-    if (!possibility) {
+    if (!possibility || (votedFor && votedFor.id === possibility.id)) {
       return;
     }
 
     if (showVote) {
       const votedId = votedFor && votedFor.id;
       const possibilityId = possibility && possibility.id;
+      setLoading(true);
       await voteFor(votedId === possibilityId ? null : possibility);
+      setLoading(false);
       setJustVoted(true);
     }
 
@@ -180,6 +183,7 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
         description={possibility ? describer(possibility) : undefined}
         show={showVote}
         vote={onEnter}
+        loading={loading}
         cancel={() => setShowVote(false)}
       />
     </Container>

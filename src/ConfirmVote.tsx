@@ -1,13 +1,13 @@
-import React from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Button, Modal, Spinner } from 'react-bootstrap';
 
-function ConfirmVote({ show, description, vote, cancel }: { show: boolean, description?: string, vote: () => void, cancel: () => void }) {
+function ConfirmVote({ show, description, vote, cancel, loading }: { show: boolean, description?: string, vote: () => Promise<void>, cancel: () => void, loading: boolean }) {
   return (
     <Modal centered show={show} onHide={cancel}>
       <Modal.Body>Vote for {description}?</Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={cancel}>Cancel</Button>
-        <Button variant="primary" onClick={vote}>Confirm</Button>
+        <Button disabled={loading} variant="secondary" onClick={cancel}>Cancel</Button>
+        <Button disabled={loading} variant="primary" onClick={vote}>{ loading ? <Spinner size="sm" animation="border" /> : 'Confirm' }</Button>
       </Modal.Footer>
     </Modal>
   );
