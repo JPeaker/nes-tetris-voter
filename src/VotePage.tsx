@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Board, Possibility } from './CommonModels';
 import Vote from './Vote';
+import ErrorPage from './ErrorPage';
+import Loading from './Loading';
 
 const GET_BOARD_QUERY = gql`
   query getBoard($id: String) {
@@ -56,11 +58,11 @@ function VotePage() {
   const [removeVote] = useMutation<VoteData>(REMOVE_VOTE);
 
   if (error) {
-    return <span>{error.message}</span>
+    return <ErrorPage message={error.message} />;
   }
 
   if (loading) {
-    return <span>Loading a scenario...</span>;
+    return <Loading />;
   }
 
   if (data) {

@@ -1,12 +1,10 @@
 # TODO List
 
 ## During Christmas break
-Revamp create page
 Loading screen
 404 Screen
 List of top games page
 "Flag" possibilities
-After voting and removing the vote, cannot set preferred orientation
 
 ## Front-end
 
