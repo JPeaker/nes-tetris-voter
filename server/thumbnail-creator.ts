@@ -1,9 +1,10 @@
-import { BlockValue, Grid } from 'nes-tetris-representation';
+import { BlockValue, getPieceGrid, Grid, Piece } from 'nes-tetris-representation';
 import { createCanvas, loadImage } from 'canvas';
 
-export default async (grid: Grid): Promise<Buffer> => {
-  const width = 600;
-  const height = 1200;
+export default async (grid: Grid, currentPiece: Piece, nextPiece: Piece): Promise<Buffer> => {
+  const width = 630;
+  const height = 630;
+  const blockSize = height / 20;
   const canvas = createCanvas(width, height);;
   const context = canvas.getContext('2d');
 
@@ -26,13 +27,30 @@ export default async (grid: Grid): Promise<Buffer> => {
       }
       const toDraw = blockValueMap[block];
       if (toDraw) {
-        context.drawImage(toDraw, width * columnIndex / 10, height * (rowIndex - 2) / 20, width / 10, width / 10);
+        context.drawImage(toDraw, blockSize * columnIndex, blockSize * (rowIndex - 2), blockSize, blockSize);
       }
     });
   });
-  ['block-1', 'block-2', 'block-3'].forEach(async (filename, index) => {
-    const image = await loadImage(`${__dirname}/static/${filename}.png`);
-    context.drawImage(image, 0, 0, width / 10, width / 10);
+
+  const currentPieceGrid = getPieceGrid(currentPiece);
+  const nextPieceGrid = getPieceGrid(nextPiece);
+
+  currentPieceGrid.forEach((row, rowIndex) => {
+    row.forEach((block, columnIndex) => {
+      const toDraw = blockValueMap[block];
+      if (toDraw) {
+        context.drawImage(toDraw, (width * 2 / 3) + blockSize * columnIndex, (height * 2 / 5) + blockSize * (rowIndex - 2), blockSize, blockSize);
+      }
+    });
+  });
+
+  nextPieceGrid.forEach((row, rowIndex) => {
+    row.forEach((block, columnIndex) => {
+      const toDraw = blockValueMap[block];
+      if (toDraw) {
+        context.drawImage(toDraw, (width * 2 / 3) + blockSize * columnIndex, (height * 4 / 5) + blockSize * (rowIndex - 2), blockSize, blockSize);
+      }
+    });
   });
 
   return canvas.toBuffer('image/png');

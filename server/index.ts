@@ -8,7 +8,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { BoardResolver } from './data/BoardResolver';
 import { RelatedPossibilityResolver } from './data/RelatedPossibilityResolver';
-import { filledGrid } from 'nes-tetris-representation';
+import { filledGrid, Piece } from 'nes-tetris-representation';
 import thumbnailCreator from './thumbnail-creator';
 import fs from 'fs';
 
@@ -42,6 +42,7 @@ const getPage = (id: string, url: string, callback: (data: string) => void) => {
       return console.log(err);
     }
 
+    data = data.replace(/{{title}}/, `NES Tetris: Vote #${id}`);
     data = data.replace(/{{thumbnailUrl}}/, `https://nes-tetris-voter.herokuapp.com/vote/${id}/thumbnail`);
     data = data.replace(/{{url}}/, `https://nes-tetris-voter.herokuapp.com${url}`);
 
@@ -53,7 +54,10 @@ app.get('/vote/:id/thumbnail', async (req, res) => {
   const boardResolver = new BoardResolver();
   const board = await boardResolver.board(req.params.id);
 
-  const image = await thumbnailCreator(board ? board.board : filledGrid);
+  const adjustedGrid = board ? board.board : filledGrid;
+  const adjustedCurrent = board ? board.currentPiece : Piece.J;
+  const adjustedNext = board ? board.nextPiece : Piece.L;
+  const image = await thumbnailCreator(adjustedGrid, adjustedCurrent, adjustedNext);
 
   res.writeHead(200, {
     'Content-Type': 'image/png',
