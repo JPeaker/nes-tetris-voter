@@ -37,6 +37,7 @@
     "@types/react-lazyload": "^3.0.0",
     "@types/react-router-dom": "^5.1.6",
     "apollo-server-express": "^2.19.0",
+    "canvas": "^2.6.1",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "graphql": "^15.4.0",

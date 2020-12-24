@@ -8,6 +8,8 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { BoardResolver } from './data/BoardResolver';
 import { RelatedPossibilityResolver } from './data/RelatedPossibilityResolver';
+import { filledGrid } from 'nes-tetris-representation';
+import thumbnailCreator from './thumbnail-creator';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -30,6 +32,19 @@ const main = async () => {
 
 // tslint:disable-next-line:no-console
 main().catch(error => console.log(error));
+
+app.get('/vote/:id/thumbnail', async (req, res) => {
+  const boardResolver = new BoardResolver();
+  const board = await boardResolver.board(req.params.id);
+
+  const image = await thumbnailCreator(board ? board.board : filledGrid);
+
+  res.writeHead(200, {
+    'Content-Type': 'image/png',
+    'Content-Length': image.length,
+  });
+  res.end(image);
+});
 
 app.use(express.static(path.join(__dirname, '../build')));
 
