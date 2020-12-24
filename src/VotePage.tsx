@@ -5,7 +5,7 @@ import { Board, Possibility } from './CommonModels';
 import Vote from './Vote';
 import ErrorPage from './ErrorPage';
 import Loading from './Loading';
-
+import LocalStorageHandler, { IStorageHandler } from './storage-handler';
 const GET_BOARD_QUERY = gql`
   query getBoard($id: String) {
     board(id: $id) {
@@ -50,6 +50,8 @@ interface VoteData {
   votes: number;
 }
 
+const storageHandler: IStorageHandler = new LocalStorageHandler();
+
 function VotePage() {
   const query = new URLSearchParams(useLocation().search);
   const [votedFor, setVotedFor] = useState<Possibility | null>(null);
@@ -77,6 +79,7 @@ function VotePage() {
       }
 
       if (newVoteFor) {
+        storageHandler.vote(data.board, newVoteFor);
         await addVote({ variables: { id: newVoteFor.id }})
       }
 
@@ -84,7 +87,9 @@ function VotePage() {
       await refetch!({ id: data.board.id });
     };
 
-    return <Vote board={data.board} voteFor={vote} votedFor={votedFor} />
+    let storageVotedFor = storageHandler.getVote(data.board.id);
+    const storagePossibility = storageVotedFor !== null ? data.board.possibilities.find(p => p.id === storageVotedFor) : undefined;
+    return <Vote board={data.board} voteFor={vote} votedFor={storagePossibility || votedFor} />
   }
 
   getBoard({ variables: { id: query.get('id') || undefined }});

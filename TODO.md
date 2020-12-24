@@ -1,13 +1,11 @@
 # TODO List
 
 ## During Christmas break
-Analytics
-Local storage voting
-Credits page
 Shortcuts explanation
+Credits page
+List of top games page
 
 ## Later
-List of top games page
 "Flag" possibilities
 
 ## Front-end

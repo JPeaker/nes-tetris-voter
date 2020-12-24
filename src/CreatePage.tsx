@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import Create from './Create';
 import ErrorPage from './ErrorPage';
 import Loading from './Loading';
+import LocalStorageHandler, { IStorageHandler } from './storage-handler';
 
 const CREATE_BOARD = gql`
   mutation createBoard($grid: [[Int!]!]!, $currentPiece: Int!, $nextPiece: Int!) {
@@ -16,11 +17,13 @@ const CREATE_BOARD = gql`
 
 interface CreateBoardData {
   createBoard: {
-    id: number;
+    id: string;
   }
 }
 
-function VotePage() {
+const storageHandler: IStorageHandler = new LocalStorageHandler();
+
+function CreatePage() {
   const [createBoard, { data, loading, error }] = useMutation<CreateBoardData>(CREATE_BOARD);
 
   if (error) {
@@ -35,12 +38,18 @@ function VotePage() {
     return <Loading message="Creating..." />
   }
 
-  const createBoardArg = (grid: Grid, currentPiece: Piece, nextPiece: Piece) => createBoard({ variables: {
-    grid,
-    currentPiece,
-    nextPiece
-  }});
+  const createBoardArg = async (grid: Grid, currentPiece: Piece, nextPiece: Piece) => {
+    const result = await createBoard({ variables: {
+      grid,
+      currentPiece,
+      nextPiece
+    }});
+
+    if (result.data) {
+      storageHandler.create(result.data.createBoard.id);
+    }
+  };
   return <Create createBoard={createBoardArg} />;
 }
 
-export default VotePage;
+export default CreatePage;
