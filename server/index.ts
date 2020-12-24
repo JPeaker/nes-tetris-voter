@@ -10,6 +10,7 @@ import { BoardResolver } from './data/BoardResolver';
 import { RelatedPossibilityResolver } from './data/RelatedPossibilityResolver';
 import { filledGrid } from 'nes-tetris-representation';
 import thumbnailCreator from './thumbnail-creator';
+import fs from 'fs';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -33,6 +34,21 @@ const main = async () => {
 // tslint:disable-next-line:no-console
 main().catch(error => console.log(error));
 
+const getPage = (id: string, url: string, callback: (data: string) => void) => {
+  const filePath = path.join(__dirname, '../build', 'index.html');
+
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      return console.log(err);
+    }
+
+    data = data.replace(/{{thumbnailUrl}}/, `https://nes-tetris-voter.herokuapp.com/vote/${id}/thumbnail`);
+    data = data.replace(/{{url}}/, `https://nes-tetris-voter.herokuapp.com${url}`);
+
+    callback(data);
+  });
+};
+
 app.get('/vote/:id/thumbnail', async (req, res) => {
   const boardResolver = new BoardResolver();
   const board = await boardResolver.board(req.params.id);
@@ -46,11 +62,11 @@ app.get('/vote/:id/thumbnail', async (req, res) => {
   res.end(image);
 });
 
+app.get('/', (req, res) => getPage(req.query.id as string, req.url, (data: string) => res.send(data)));
+
 app.use(express.static(path.join(__dirname, '../build')));
 
-app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname, '../build', 'index.html'));
-});
+app.get('/*', (req, res) => getPage(req.query.id as string, req.url, (data: string) => res.send(data)));
 
 // tslint:disable-next-line:no-console
 app.listen(port, () => console.log(`Listening on port ${port}`));

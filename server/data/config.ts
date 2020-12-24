@@ -4,7 +4,6 @@ import { ConnectionOptions, createConnection } from 'typeorm';
 dotenv.config();
 
 export const getConnectionOptions = (): ConnectionOptions => {
-  console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
   return {
     type: 'postgres',
     url: process.env.DATABASE_URL,
