@@ -3,6 +3,7 @@ import { Board, Possibility } from './CommonModels';
 export interface IStorageHandler {
   vote: (board: Board, possibility: Possibility) => void;
   getVote: (id: string) => string | null;
+  getVoted: () => string[];
   create: (id: string) => void;
 }
 
@@ -51,5 +52,10 @@ export default class LocalStorageHandler implements IStorageHandler {
     const filtered = value.created.filter(c => c !== id);
     filtered.push(id)
     this.setValue({...value, created: filtered });
+  }
+
+  getVoted(): string[] {
+    const value = this.getValue();
+    return Object.keys(value.votes);
   }
 }
