@@ -24,13 +24,11 @@ export class BoardResolver {
 
   @Query(() => Board)
   async randomBoard(@Arg('exclude', () => [String]) exclude: string[]): Promise<Board | undefined> {
-    const slimBoard = await Board.getRepository().createQueryBuilder()
-    .select('boards.id')
-    .from(Board, 'boards')
-    .where(`boards.id not in (${exclude.join(',')})`)
-    .orderBy('RANDOM()')
-    .limit(1)
-    .getOne();
+    const slimBoard = exclude.length > 0
+      ? await Board.getRepository().createQueryBuilder().select('boards.id').from(Board, 'boards')
+        .where(`boards.id not in (${exclude.join(',')})`).orderBy('RANDOM()').limit(1).getOne()
+      : await Board.getRepository().createQueryBuilder().select('boards.id').from(Board, 'boards')
+        .orderBy('RANDOM()').limit(1).getOne();
 
     if (!slimBoard) {
       return undefined;
