@@ -130,7 +130,7 @@
 }
 
 .modal-dialog {
-  max-width: 44rem;
+  max-width: 66rem;
   max-height: 40rem;
 }
 
@@ -145,6 +145,19 @@
   width: 12rem;
 }
 
+#file {
+  margin-top: -4rem;
+}
+
+#paste-area {
+  margin-top: 4rem;
+}
+
+.or {
+  position: relative;
+  top: 48%;
+}
+
 .x-icon {
   fill: red;
 }
@@ -155,4 +168,12 @@
 
 .underline {
   text-decoration: underline;
+}
+
+.zoom-title {
+  display: inline-block;
+  margin-right: 0.25rem;
+}
+.range-slider__wrap {
+  display: inline-block !important;
 }

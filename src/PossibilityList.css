@@ -90,33 +90,11 @@
 
 .piece-select-grid,
 .center-tool,
-.upload-button-wrapper input,
 .loading-page-col {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-.upload-cropper {
-  height: 40rem;
-  width: 20rem;
-}
-
-.modal-dialog {
-  max-width: 44rem;
-  max-height: 40rem;
-}
-
-.upload-button-wrapper {
-  text-align: center;
-  outline: 2px dashed #92b0b3;
-  outline-offset: -10px;
-  height: 100%;
-}
-
-.upload-button-wrapper input {
-  width: 12rem;
 }
 
 .error-page-col,

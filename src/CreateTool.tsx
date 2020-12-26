@@ -43,7 +43,7 @@ const mapTypeToContent = (type: CreateToolType): { icon: JSX.Element, label: str
       ];
       return { icon: <TetrisGrid grid={blocksGrid as Grid} blockSizeInRem={1.25} hideTopTwoRows={false} />, label: 'Toggle Block' };
     case CreateToolType.UPLOAD:
-      return { icon: <UploadIcon size={64} />, label: 'Upload' };
+      return { icon: <UploadIcon size={64} />, label: 'Upload Screenshot' };
     case CreateToolType.SELECT_CURRENT_T:
       return getPieceContent(Piece.T);
     case CreateToolType.SELECT_CURRENT_I:
