@@ -1,6 +1,6 @@
 import { gql, useLazyQuery, useMutation } from '@apollo/client';
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Redirect, useLocation } from 'react-router-dom';
 import { Board, Possibility } from './CommonModels';
 import Vote from './Vote';
 import ErrorPage from './ErrorPage';
@@ -85,26 +85,32 @@ function VotePage() {
   const [removeVote] = useMutation<VoteData>(REMOVE_VOTE);
 
   const id = query.get('id');
-  const adjustedGetBoard = id === null
-    ? () => getRandomBoard({ variables: { exclude: storageHandler.getVoted() } })
-    : () => getBoard({ variables: { id }});
-  const adjustedData = id === null
-    ? randomData && randomData.randomBoard
-    : data && data.board;
-  const adjustedLoading = id === null ? randomLoading : loading;
-  const adjustedError = id === null ? randomError : error;
-  const adjustedRefetch = id === null ? randomRefetch : refetch;
 
-  if (adjustedError) {
-    return <ErrorPage message={adjustedError.message} />;
+  if (randomLoading) {
+    return <Loading message="Loading Random Scenario" />;
   }
 
-  if (adjustedLoading) {
-    const message = id === null ? 'Loading Random Scenario' : undefined;
-    return <Loading message={message} />;
+  if (randomError) {
+    return <ErrorPage message={randomError.message} />;
   }
 
-  if (adjustedData) {
+  if (randomData) {
+    return <Redirect to={`/vote?id=${randomData.randomBoard.id}`} />;
+  }
+
+  if (!id) {
+    getRandomBoard({ variables: { exclude: storageHandler.getVoted() } });
+  }
+
+  if (error) {
+    return <ErrorPage message={error.message} />;
+  }
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (data) {
     const vote = async (newVoteFor: Possibility | null) => {
       if (votedFor === newVoteFor) {
         return;
@@ -115,20 +121,20 @@ function VotePage() {
       }
 
       if (newVoteFor) {
-        storageHandler.vote(adjustedData, newVoteFor);
+        storageHandler.vote(data.board, newVoteFor);
         await addVote({ variables: { id: newVoteFor.id }})
       }
 
       setVotedFor(newVoteFor);
-      await adjustedRefetch!({ id: adjustedData.id });
+      await refetch!({ id: data.board.id });
     };
 
-    let storageVotedFor = storageHandler.getVote(adjustedData.id);
-    const storagePossibility = storageVotedFor !== null ? adjustedData.possibilities.find(p => p.id === storageVotedFor) : undefined;
-    return <Vote board={adjustedData} voteFor={vote} votedFor={storagePossibility || votedFor} />
+    let storageVotedFor = storageHandler.getVote(data.board.id);
+    const storagePossibility = storageVotedFor !== null ? data.board.possibilities.find(p => p.id === storageVotedFor) : undefined;
+    return <Vote board={data.board} voteFor={vote} votedFor={storagePossibility || votedFor} />
   }
 
-  adjustedGetBoard();
+  getBoard({ variables: { id: id! }});
 
   return <span>Error: Unknown scenario. Please refresh and try again</span>;
 }
