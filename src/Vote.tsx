@@ -124,11 +124,9 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
 
   return (
     <Container tabIndex={-1} style={{ outline: 'none' }} ref={ref} onKeyDown={handler} fluid>
-      <Row className="mt-4 flex-row fluid align-items-center justify-content-center">
-        <Col xs={{ span: 4, offset: 4 }} style={{ textAlign: 'center' }}>
-          <h3>Board #{board.id}</h3>
-        </Col>
-        <Col xs={4} style={{ textAlign: 'right' }}>
+      <Row className="mt-4 flex-row fluid board-title-container">
+        <h3 className="board-title">Board #{board.id}</h3>
+        <div className="board-title-buttons">
           <Link to="/vote">
             <Button variant="outline-primary" style={{ marginRight: '4px' }}>New random scenario</Button>
           </Link>
@@ -136,11 +134,11 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
             <span style={{ marginRight: '4px' }}>{ showCopied ? 'Copied!' : 'Copy link to clipboard' }</span>
             { !showCopied ? <ShareAndroidIcon size={16} /> : undefined }
           </Button>
-        </Col>
+        </div>
       </Row>
       <Row className="flex-row fluid align-items-center justify-content-center">
-        <Col xs={4} className="offset-md-2">
-          <h4 className="ml-2">Grid Preview</h4>
+        <Col xs={6} xl={{ span: 5, offset: 1 }}>
+          <h4>Grid Preview</h4>
           <ChoiceGrid
             grid={board.board}
             possibility={possibility}
@@ -150,34 +148,32 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
             onClick={() => setShowVote(true)}
           />
         </Col>
-        {
-          votedFor ? (
-            <Col xs={4}>
-              <h4>Top Rated Placements</h4>
-              <p>Here are the top 3 placements according to other votes (and yours)</p>
-              <VoteSummary
+        <Col xs={6}>
+          <Col xs={12}>
+            <h4>{votedFor ? 'Top Rated Placements' : 'Placement List'}</h4>
+            <p>{ votedFor
+              ? 'Here are the top 3 placements according to other votes (and yours)'
+              : 'Select the placement in this list that you think is the best move'
+            }</p>
+          </Col>
+          <Col xs={12} xl={9}>
+            {
+              votedFor ? <VoteSummary
                 possibilities={board.possibilities}
                 votedFor={votedFor}
                 grid={board.board}
                 previewedPossibility={possibility}
                 previewPossibility={selectPossibility}
                 changeVote={() => setShowVote(true)}
-              />
-            </Col>
-          ) : (
-            <Col xs={4}>
-              <h4>Placement List</h4>
-              <p>Select the placement in this list that you think is the best move</p>
-              <PossibilityList
+              /> : <PossibilityList
                 possibilities={board.possibilities}
                 selected={possibility}
                 showVote={() => setShowVote(true)}
                 setPossibility={selectPossibility}
               />
-            </Col>
-          )
-        }
-        <Col xs={2} />
+            }
+          </Col>
+        </Col>
       </Row>
       <ConfirmVote
         description={possibility ? describer(possibility) : undefined}

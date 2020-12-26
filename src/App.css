@@ -1,0 +1,13 @@
+.logo {
+  width: 3rem;
+}
+
+@media (min-width: 768px) {
+  .navigation-link {
+    border-right: 1px solid grey;
+  }
+
+  .navigation-link.first {
+    border-left: 1px solid grey;
+  }
+}

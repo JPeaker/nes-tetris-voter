@@ -1,6 +1,6 @@
 import { BlockValue, filledGrid, Grid, Piece } from 'nes-tetris-representation';
 import React, { useRef, useEffect, useState } from 'react';
-import { Card, Col, Container, Row, Button, CardColumns } from 'react-bootstrap';
+import { Card, Col, Container, Row, Button, CardColumns, ListGroup } from 'react-bootstrap';
 import inputHandler from './input-handler';
 import _ from 'lodash';
 import CreateGrid from './CreateGrid';
@@ -9,6 +9,8 @@ import { emptyGrid } from './emptyGrid';
 import CreateTool, { CreateToolType } from './CreateTool';
 import PieceSelect from './PieceSelect';
 import Upload from './Upload';
+import './Create.css';
+import { XIcon, CheckIcon } from '@primer/octicons-react';
 
 export enum CreateMode {
   SET_GRID,
@@ -101,7 +103,7 @@ const getInstructions = (tool: CreateToolType): JSX.Element => {
       </Card.Text>;
     case CreateToolType.TOGGLE_BLOCKS:
       return <Card.Text>
-        Hover your mouse over individual blocks. You'll se semi-transparent blocks on the specific block you're hovering over
+        Hover your mouse over individual blocks. You'll see semi-transparent blocks on the specific block you're hovering over
         <br /><br />
         Click (or drag) to toggle individual blocks on order off. Use this tool for precise block changes
       </Card.Text>;
@@ -269,44 +271,45 @@ function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece
               <Card.Title>Instructions</Card.Title>
               {getInstructions(tool)}
             </Card.Body>
-            {
-              !canCreate ? <Card.Footer>
-                In order to successfully create a scenario, you must:
-                <br /><br />
-                <ul>
-                  <li>Have a grid with no complete rows</li>
-                  <li>Have selected a current piece</li>
-                  <li>Have selected a next piece</li>
-                </ul>
-              </Card.Footer> : undefined
-            }
+            <Card.Footer>
+              In order to successfully create a scenario, you must:
+              <br /><br />
+              <div onClick={() => setTool(CreateToolType.ADD_COLUMNS)}>
+                { hasFullRow ? <XIcon className="x-icon" size={24} /> : <CheckIcon className="check-icon" size={24} /> }
+                <a className="underline" href="#">Have a grid with no full rows</a>
+              </div>
+              <div onClick={() => setTool(CreateToolType.SELECT_CURRENT_T)}>
+                { currentPiece === null ? <XIcon className="x-icon" size={24} /> : <CheckIcon className="check-icon" size={24} /> }
+                <a className="underline" href="#">Select a current piece</a>
+              </div>
+              <div onClick={() => setTool(CreateToolType.SELECT_NEXT_T)}>
+                { nextPiece === null ? <XIcon className="x-icon" size={24} /> : <CheckIcon className="check-icon" size={24} /> }
+                <a className="underline" href="#">Select a next piece</a>
+              </div>
+              <Button disabled={!canCreate} className="create-button" onClick={() => canCreate && createBoard(grid, currentPiece!, nextPiece!)}>Create</Button>
+            </Card.Footer>
           </Card>
         </Col>
         <Col xs={4}>
-          <div className="tetris-grid-wrapper">
+          <div className="tetris-grid-wrapper-create">
             <img className="current-text" src={current} />
+            <CreateGrid state={mode === CreateMode.SET_GRID ? tool : null} setState={setTool} grid={grid} setGrid={setGrid} />
             <PieceSelect className="current-piece" piece={currentPiece} active={mode === CreateMode.SELECT_CURRENT_PIECE} onClick={() => setTool(CreateToolType.SELECT_CURRENT_T)} />
             <PieceSelect className="next-piece-create" piece={nextPiece} active={mode === CreateMode.SELECT_NEXT_PIECE} onClick={() => setTool(CreateToolType.SELECT_NEXT_T)} />
-            <CreateGrid state={mode === CreateMode.SET_GRID ? tool : null} setState={setTool} grid={grid} setGrid={setGrid} />
-            <Button disabled={!canCreate} className="create-button" onClick={() => canCreate && createBoard(grid, currentPiece!, nextPiece!)}>Create</Button>
           </div>
         </Col>
         <Col xs={3}>
-          {
-            mode !== CreateMode.SET_GRID
-            ? <CardColumns>{toolRender}</CardColumns>
-            : toolRender
-          }
-          <Upload
-            show={tool == CreateToolType.UPLOAD}
-            hide={() => setTool(CreateToolType.TOGGLE_BLOCKS)}
-            submit={(grid: Grid) => {
-              setGrid(grid);
-              setTool(CreateToolType.TOGGLE_BLOCKS);
-            }}
-          />
+          {mode !== CreateMode.SET_GRID ? <CardColumns>{toolRender}</CardColumns> : toolRender}
         </Col>
       </Row>
+      <Upload
+        show={tool == CreateToolType.UPLOAD}
+        hide={() => setTool(CreateToolType.TOGGLE_BLOCKS)}
+        submit={(grid: Grid) => {
+          setGrid(grid);
+          setTool(CreateToolType.TOGGLE_BLOCKS);
+        }}
+      />
     </Container>
   );
 }

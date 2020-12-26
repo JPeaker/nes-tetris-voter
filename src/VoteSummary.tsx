@@ -60,8 +60,8 @@ function VoteSummary({ grid, possibilities, votedFor, previewedPossibility, chan
     <Row className="fluid">
       <Col style={{ textAlign: 'end' }}>{
         !allResults
-          ? <a href="#" onClick={() => setAllResults(true)}>See all results</a>
-          : <a href="#" onClick={() => setAllResults(false)}>See top results</a>
+          ? <a className="underline" href="#" onClick={() => setAllResults(true)}>See all results</a>
+          : <a className="underline" href="#" onClick={() => setAllResults(false)}>See top results</a>
       }</Col>
     </Row>
   </Container>;

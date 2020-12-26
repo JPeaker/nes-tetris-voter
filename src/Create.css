@@ -1,0 +1,158 @@
+.tetris-grid-wrapper-create {
+  height: 28rem;
+  background-image: url(./background.png);
+  background-repeat:no-repeat;
+  background-size:contain;
+  background-position: unset;
+}
+
+/* Height: 129/140, height of grid is 20.45 blocklengths */
+.tetris-grid-create {
+  position: relative;
+  top: -.2rem;
+  left: 1rem;
+}
+
+.current-text {
+  width: 5rem;
+  position: relative;
+  top: 0.5rem;
+  left: 16.5rem;
+}
+
+.current-piece {
+  position: relative;
+  left: 16rem;
+  bottom: 26.5rem;
+  height: 6rem;
+  width: 5.75rem;
+}
+
+.next-piece-create {
+  position: relative;
+  left: 16.25rem;
+  bottom: 23.625rem;
+  height: 6.625rem;
+  width: 5rem;
+}
+
+.create-button {
+  margin-top: 1rem;
+}
+
+@media (min-width: 1660px) {
+  .tetris-grid-wrapper-create {
+    height: 40rem;
+  }
+
+  .tetris-grid-create {
+    top: 0.25rem;
+    left: 1.625rem;
+  }
+
+  .current-text {
+    width: 7rem;
+    top: 1rem;
+    left: 23.625rem;
+  }
+
+  .current-piece {
+    left: 22.875rem;
+    bottom: 37rem;
+    height: 8.5rem;
+    width: 8.25rem;
+  }
+
+  .next-piece-create {
+    left: 23.5rem;
+    bottom: 32.5rem;
+    height: 9.25rem;
+    width: 7rem;
+  }
+}
+
+.current-considered-possibility {
+  color: #495057;
+  background-color: #f8f9fa;
+}
+
+.btn-dark:hover .hidden,
+.btn-dark:active .hidden {
+  background-color: #23272b;
+}
+
+.create-border {
+  border: 3px solid red;
+  box-sizing: content-box;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.create-border.complete {
+  border-color: green;
+}
+
+.create-border.active {
+  border-color: orange;
+}
+
+.create-tool {
+  width: 9rem;
+  height: 9rem;
+  text-align: center;
+  border: 2px solid #aaa;
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.create-tool.selected,
+.create-tool.selected:hover,
+.create-tool:active {
+  background-color: #ccc;
+}
+
+.create-tool:hover {
+  background-color: #ddd;
+}
+
+.piece-select-grid,
+.center-tool,
+.upload-button-wrapper input {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.upload-cropper {
+  height: 40rem;
+  width: 20rem;
+}
+
+.modal-dialog {
+  max-width: 44rem;
+  max-height: 40rem;
+}
+
+.upload-button-wrapper {
+  text-align: center;
+  outline: 2px dashed #92b0b3;
+  outline-offset: -10px;
+  height: 100%;
+}
+
+.upload-button-wrapper input {
+  width: 12rem;
+}
+
+.x-icon {
+  fill: red;
+}
+
+.check-icon {
+  fill: green;
+}
+
+.underline {
+  text-decoration: underline;
+}

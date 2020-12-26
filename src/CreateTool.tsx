@@ -25,7 +25,7 @@ export enum CreateToolType {
   SELECT_NEXT_L,
 };
 
-const getPieceContent = (piece: Piece) => ({ icon: <TetrisGrid grid={getPieceGrid(piece)} blockSizeInRem={1.75} hideTopTwoRows={false} transparentEmptyBlocks />, label: '' });
+const getPieceContent = (piece: Piece) => ({ icon: <TetrisGrid grid={getPieceGrid(piece)} blockSizeInRem={1} hideTopTwoRows={false} transparentEmptyBlocks />, label: '' });
 const mapTypeToContent = (type: CreateToolType): { icon: JSX.Element, label: string } => {
   switch (type) {
     case CreateToolType.ADD_COLUMNS:

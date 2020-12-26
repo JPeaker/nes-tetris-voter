@@ -1,9 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
-import { BlockValue, ColumnIndex, getPiece, getPieceGrid, Grid, Piece, PieceList, RowIndex } from 'nes-tetris-representation';
+import { BlockValue, ColumnIndex, filledGrid, getPiece, getPieceGrid, Grid, Piece, PieceList, RowIndex } from 'nes-tetris-representation';
 import { BlockProps, TetrisGrid } from 'nes-tetris-components';
-import './PossibilityList.css';
+import './ChoiceGrid.css';
 import { Possibility } from './CommonModels';
+import { isMdOrSmaller, isSmOrSmaller, isXlOrLarger } from './media-queries';
 
 interface ChoiceGridProps {
   grid: Grid;
@@ -31,15 +32,21 @@ function ChoiceGrid({ grid, possibility, nextPiece, setConsideredRowColumn, onCl
   }
 
   const pieceLabel = PieceList.find(p => p.value === nextPiece)!.label;
+
+  const smOrSmaller = isSmOrSmaller();
+  const mdOrSmaller = isMdOrSmaller();
+  const blockSize = smOrSmaller ? 1.25 : mdOrSmaller ? 1.5 : 1.63334;
+
   return (
     <div className="tetris-grid-wrapper">
       <TetrisGrid
         grid={grid}
         possiblePiece={possibility ? getPiece(possibility) : undefined}
         className="tetris-grid-vote"
+        blockSizeInRem={blockSize}
         getBlockProps={getBlockProps}
       />
-      <TetrisGrid grid={getPieceGrid(nextPiece)} hideTopTwoRows={false} blockSizeInRem={1.5} className={`next-piece-vote next-piece-${pieceLabel}`} />
+      <TetrisGrid grid={getPieceGrid(nextPiece)} hideTopTwoRows={false} blockSizeInRem={blockSize * 3/4} className="next-piece-vote" />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import CreatePage from './CreatePage';
 import { Switch, Route, Link } from 'react-router-dom';
 import { Button, Container, Form, FormControl, Nav, Navbar, Row } from 'react-bootstrap';
 import { SearchIcon } from '@primer/octicons-react';
+import './App.css';
 
 function App() {
   const [search, setSearch] = useState<string>('');
@@ -22,17 +23,17 @@ function App() {
   ]
   return (
     <Container className="p-0" fluid onKeyDown={focusSearch}>
-      <Row noGutters xs={1}>
-        <Navbar bg="dark" variant="dark">
+        <Navbar bg="dark" variant="dark" expand="md">
           <Navbar.Brand href="/vote">
-            <img src="/logo.png" className="mr-sm-2" style={{ width: '5rem' }} />{' '}
+            <img src="/logo.png" className="mr-sm-2 logo" />{' '}
             NES Tetris Voter
           </Navbar.Brand>
+          <Navbar.Toggle aria-controls="navbar-nav" />
           <Navbar.Collapse>
             <Nav className="mr-auto">
             {
                 menuItems.map((item, index) => (
-                  <Nav.Link key={item.name} href={item.paths.reverse()[0]} style={{ borderLeft: index === 0 ? '1px solid grey' : undefined, borderRight: '1px solid grey' }}>{item.name}</Nav.Link>
+                  <Nav.Link key={item.name} href={item.paths.reverse()[0]} className={`navigation-link ${index === 0 ? 'first' : ''}`}>{item.name}</Nav.Link>
                 ))
               }
             </Nav>
@@ -52,8 +53,6 @@ function App() {
             </Form>
           </Navbar.Collapse>
         </Navbar>
-      </Row>
-      <Row noGutters xs={1} className="p-0">
         <Switch>
           <Route path="/create">
             <CreatePage />
@@ -62,7 +61,6 @@ function App() {
             <VotePage />
           </Route>
         </Switch>
-      </Row>
     </Container>
   );
 }

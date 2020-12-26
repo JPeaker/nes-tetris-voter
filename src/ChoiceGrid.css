@@ -1,0 +1,22 @@
+.tetris-grid-wrapper {
+  height: 36.25rem;
+  background-image: url(./background.png);
+  background-repeat:no-repeat;
+  background-size:contain;
+  background-position: unset;
+}
+
+/* The grid is 193/339 as a proportion of the whole image width */
+/* Height: 129/140, height of grid is 20.45 blocklengths */
+.tetris-grid-vote {
+  position: relative;
+  top: 1.875rem;
+  left: 1.58rem;
+}
+
+.next-piece-vote {
+  position: relative;
+  left: 24.75rem;
+  bottom: 15rem;
+  transform: translate(-50%, -50%);
+}

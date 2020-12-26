@@ -3,6 +3,8 @@ import { BlockValue, ColumnIndex, Grid, RowIndex } from 'nes-tetris-representati
 import React, { useState } from 'react';
 import _ from 'lodash';
 import { CreateToolType } from './CreateTool';
+import './Create.css';
+import { isXXlOrLarger } from './media-queries';
 
 function CreateGrid({ state, setState, grid, setGrid }: { state: CreateToolType | null, setState: (state: CreateToolType) => void, grid: Grid, setGrid: (grid: Grid) => void }) {
   const [hoverBlock, setHoverBlock] = useState<{ row: RowIndex, column: ColumnIndex } | null>(null);
@@ -46,11 +48,15 @@ function CreateGrid({ state, setState, grid, setGrid }: { state: CreateToolType 
     state !== null ? 'active' : '',
   ];
 
+  const isMassiveScreen = isXXlOrLarger();
+  const blockSize = isMassiveScreen ? 1.8023 : 1.26161;
+
   return (
     <TetrisGrid
       grid={grid}
       className={classes.filter(c => !!c).join(' ')}
       getBlockProps={getBlockProps}
+      blockSizeInRem={blockSize}
       onMouseLeave={() => setHoverBlock(null)}
     />
   );
