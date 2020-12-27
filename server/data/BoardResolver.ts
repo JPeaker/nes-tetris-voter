@@ -1,8 +1,8 @@
-import { Arg, Field, FieldResolver, Int, Mutation, ObjectType, Query, Resolver, Root } from 'type-graphql';
+import { Arg, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { Board } from './entity/Board';
 import { BoardInput } from './BoardInput';
 import { findAllPossiblePositions } from '../position-finder';
-import { Grid, Orientation, Piece } from 'nes-tetris-representation';
+import { Orientation } from 'nes-tetris-representation';
 import { RelatedPossibility } from './entity/RelatedPossibility';
 import { Possibility } from './entity/Possibility';
 
@@ -102,12 +102,24 @@ export class BoardResolver {
   }
 
   @Mutation(() => Boolean)
-  async deleteBoard(@Arg('id', () => Int) id: string): Promise<boolean> {
+  async deleteBoard(@Arg('id', () => String) id: string, @Ctx() ctx: { isAdmin: boolean }): Promise<boolean> {
+    if (!ctx.isAdmin) {
+      throw new Error('No admin permission present');
+    }
+
     const existingBoard = await Board.findOne({ where: { id } });
 
     if (!existingBoard) {
       throw new Error(`Board doesn't exist with id: ${id}`);
     }
+
+    const possibilityIds = existingBoard.possibilities.map(poss => poss.id);
+    RelatedPossibility
+      .createQueryBuilder()
+      .delete()
+      .from('related_possibility')
+      .where(`id in (${possibilityIds.join(',')})`)
+      .execute();
 
     await existingBoard.remove();
     return true;

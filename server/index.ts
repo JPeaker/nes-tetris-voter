@@ -14,6 +14,7 @@ import fs from 'fs';
 
 const app = express();
 const port = process.env.PORT || 5000;
+const ADMIN_AUTH = process.env.ADMIN_AUTH;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,7 +28,16 @@ const main = async () => {
     validate: false,
   });
 
-  const server = new ApolloServer({ schema, introspection: true });
+  const server = new ApolloServer({
+    schema,
+    introspection: true,
+    context: ({ req }) => {
+      const token = req.headers.authorization || '';
+      const isAdmin = token === ADMIN_AUTH;
+      console.log(isAdmin, token);
+      return { isAdmin };
+    }
+  });
   server.applyMiddleware({ app });
 }
 

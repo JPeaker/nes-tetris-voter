@@ -34,7 +34,7 @@ scalar DateTime
 type Mutation {
   addVote(id: String!): RelatedPossibility!
   createBoard(board: BoardInput!): Board!
-  deleteBoard(id: Int!): Boolean!
+  deleteBoard(id: String!): Boolean!
   removeVote(id: String!): RelatedPossibility!
 }
 
