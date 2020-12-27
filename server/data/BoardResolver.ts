@@ -70,7 +70,6 @@ export class BoardResolver {
 
     // Save the board
     const dbBoard = Board.create(boardInput);
-    await dbBoard.save();
 
     // Save all the related possibilities
     const possibilities = findAllPossiblePositions({
@@ -79,6 +78,16 @@ export class BoardResolver {
       column: 5,
       orientation: Orientation.Down,
     }, boardInput.board);
+
+    if (possibilities.length === 0) {
+      throw new Error('There are no possible placements for this board');
+    }
+
+    if (possibilities.length === 1) {
+      throw new Error('There\'s only one placement for this board. Do that one');
+    }
+
+    await dbBoard.save();
     await Promise.all(possibilities.map(async possibility => {
       const foundPossibility = await Possibility.findOne({ where: possibility });
 
