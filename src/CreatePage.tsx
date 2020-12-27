@@ -1,7 +1,7 @@
 import { gql, useMutation } from '@apollo/client';
 import { Grid, Piece } from 'nes-tetris-representation';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import Create from './Create';
 import ErrorPage from './ErrorPage';
 import Loading from './Loading';
@@ -27,6 +27,11 @@ function CreatePage() {
   const [createBoard, { data, loading, error }] = useMutation<CreateBoardData>(CREATE_BOARD);
 
   if (error) {
+    if (error.message.includes('Board exists with id')) {
+      const id = error.message.split(':')[1];
+      return <Redirect to={`/vote?id=${id}`} />;
+    }
+
     return <ErrorPage message={error.message} />;
   }
 
