@@ -146,7 +146,7 @@ export default ({ show = false, hide, submit }: { show?: boolean, hide: () => vo
           <Col xs={{ span: 4, offset: 4 }}>
             <div style={{ display: 'inline-block' }}>
               <h6 className="zoom-title">Zoom:</h6>
-              <Slider disabled={!cropping} min={1} max={4} step={0.01} value={zoom} onChange={event => setZoom(parseFloat(event.target.value))} />
+              <Slider disabled={!cropping} min={0.75} max={4} step={0.01} value={zoom} onChange={event => setZoom(parseFloat(event.target.value))} />
             </div>
           </Col>
           <Col xs={4} className="text-right pr-0">
