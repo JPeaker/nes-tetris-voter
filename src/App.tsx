@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import VotePage from './VotePage';
 import CreatePage from './CreatePage';
 import BrowsePage from './BrowsePage';
+import AboutPage from './AboutPage';
 import { Switch, Route, Link } from 'react-router-dom';
 import { Button, Container, Row, Form, FormControl, Nav, Navbar } from 'react-bootstrap';
 import { SearchIcon } from '@primer/octicons-react';
@@ -22,6 +23,7 @@ function App() {
     { paths: ['/', '/vote'], name: 'Random Vote' },
     { paths: ['/create'], name: 'Create' },
     { paths: ['/browse'], name: 'Browse' },
+    { paths: ['/about'], name: 'About' },
   ];
 
   return (
@@ -62,6 +64,9 @@ function App() {
           </Route>
           <Route path="/browse">
             <BrowsePage />
+          </Route>
+          <Route path="/about">
+            <AboutPage />
           </Route>
           <Route path={['/', '/vote']}>
             <VotePage />

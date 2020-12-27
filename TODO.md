@@ -1,7 +1,6 @@
 # TODO List
 
 ## During Christmas break
-Credits page
 
 ## Later
 "Flag" possibilities
