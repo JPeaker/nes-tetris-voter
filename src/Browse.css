@@ -13,11 +13,11 @@
   margin: auto;
 }
 
-.card {
+.card-browse {
   text-align: center;
 }
 
-.card:hover {
+.card-browse:hover {
   background-color: #ddd;
   cursor: pointer;
 }

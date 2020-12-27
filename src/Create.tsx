@@ -11,6 +11,8 @@ import PieceSelect from './PieceSelect';
 import Upload from './Upload';
 import './Create.css';
 import { XIcon, CheckIcon } from '@primer/octicons-react';
+import KeyboardShortcuts from './KeyboardShortcuts';
+import { KeyboardShortcutVariant } from './KeyboardShortcuts';
 
 export enum CreateMode {
   SET_GRID,
@@ -302,6 +304,7 @@ function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece
           {mode !== CreateMode.SET_GRID ? <CardColumns>{toolRender}</CardColumns> : toolRender}
         </Col>
       </Row>
+      <KeyboardShortcuts variant={KeyboardShortcutVariant.CREATE} />
       <Upload
         show={tool == CreateToolType.UPLOAD}
         hide={() => setTool(CreateToolType.TOGGLE_BLOCKS)}

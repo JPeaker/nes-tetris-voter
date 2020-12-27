@@ -16,7 +16,7 @@ interface BrowseProps {
   recentLoading: boolean,
 };
 
-const getCard = (board: BrowseBoard, goTo: (route: string) => void, visible: boolean) => <Card key={board.id} onClick={() => goTo(board.id)} style={visible ? {} : { display: 'none' }}>
+const getCard = (board: BrowseBoard, goTo: (route: string) => void, visible: boolean) => <Card className="card-browse" key={board.id} onClick={() => goTo(board.id)} style={visible ? {} : { display: 'none' }}>
   <Card.Img variant="top" src={`./vote/${board.id}/thumbnail`} />
   <Card.Body>
     <Card.Title>Board #{board.id}</Card.Title>

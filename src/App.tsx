@@ -3,7 +3,7 @@ import VotePage from './VotePage';
 import CreatePage from './CreatePage';
 import BrowsePage from './BrowsePage';
 import { Switch, Route, Link } from 'react-router-dom';
-import { Button, Container, Form, FormControl, Nav, Navbar } from 'react-bootstrap';
+import { Button, Container, Row, Form, FormControl, Nav, Navbar } from 'react-bootstrap';
 import { SearchIcon } from '@primer/octicons-react';
 import './App.css';
 

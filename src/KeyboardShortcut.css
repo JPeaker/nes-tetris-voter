@@ -1,0 +1,17 @@
+.modal-dialog-keyboard .modal-dialog {
+  min-width: 66rem;
+}
+
+.keyboard-shortcut-wrapper {
+  position: absolute;
+  bottom: 0;
+}
+
+.keyboard-shortcut-wrapper h5 {
+  display: inline-block;
+  margin-left: 0.25rem;
+}
+
+.keyboard-shortcut-icon {
+  width: 3rem;
+}

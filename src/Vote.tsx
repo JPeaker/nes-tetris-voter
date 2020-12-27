@@ -11,7 +11,8 @@ import { Col, Container, Row, Button } from 'react-bootstrap';
 import selectNextOrientation from './selectNextOrientation';
 import VoteSummary from './VoteSummary';
 import { ShareAndroidIcon } from '@primer/octicons-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
+import KeyboardShortcuts, { KeyboardShortcutVariant } from './KeyboardShortcuts';
 
 export type ConsideredPlacement = {
   placement?: { row: RowIndex, column: ColumnIndex },
@@ -32,6 +33,7 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
   const [loading, setLoading] = useState<boolean>(false);
 
   const location = useLocation();
+  const history = useHistory();
 
   const voteSortedPossibilities = [...board.possibilities].sort((p1, p2) => p2.votes - p1.votes);
   const consideredProbabilityList = votedFor ? voteSortedPossibilities : board.possibilities;
@@ -92,12 +94,25 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
     setShowVote(!showVote);
   };
 
+  const [showCopied, setShowCopied] = useState<boolean>(false);
+  const copyToClipboard = () => {
+    const el = document.createElement('textarea');
+    el.value = `https://nes-tetris-voter.herokuapp.com${location.pathname}?id=${board.id}`;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    setShowCopied(true);
+  }
+
   const handler = (event: React.KeyboardEvent<HTMLDivElement>) => inputHandler({
     Escape: showVote ? () => setShowVote(false) : removeConsiderations,
     w: !votedFor ? nextOrientation(Orientation.Up) : undefined,
     a: !votedFor ? nextOrientation(Orientation.Left) : undefined,
     s: !votedFor ? nextOrientation(Orientation.Down) : undefined,
     d: !votedFor ? nextOrientation(Orientation.Right) : undefined,
+    n: () => history.push('/vote'),
+    c: copyToClipboard,
     arrowup,
     arrowdown,
     enter: onEnter,
@@ -111,24 +126,13 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
     }
   }, [true]);
 
-  const [showCopied, setShowCopied] = useState<boolean>(false);
-  const copyToClipboard = () => {
-    const el = document.createElement('textarea');
-    el.value = `https://nes-tetris-voter.herokuapp.com${location.pathname}?id=${board.id}`;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    setShowCopied(true);
-  }
-
   return (
     <Container tabIndex={-1} style={{ outline: 'none' }} ref={ref} onKeyDown={handler} fluid>
       <Row className="mt-4 flex-row fluid board-title-container">
         <h3 className="board-title">Board #{board.id}</h3>
         <div className="board-title-buttons">
           <Link to="/vote">
-            <Button variant="outline-primary" style={{ marginRight: '4px' }}>New random scenario</Button>
+            <Button variant="outline-primary" style={{ marginRight: '4px' }}>Fetch new scenario</Button>
           </Link>
           <Button variant="outline-primary" onClick={copyToClipboard}>
             <span style={{ marginRight: '4px' }}>{ showCopied ? 'Copied!' : 'Copy link to clipboard' }</span>
@@ -139,6 +143,9 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
       <Row className="flex-row fluid align-items-center justify-content-center">
         <Col xs={6} xl={{ span: 5, offset: 1 }}>
           <h4>Grid Preview</h4>
+          <p style={{ maxWidth: '30rem' }}>
+            Hover over potential placements to see what they look like. Use the WASD keys to prefer an orientation and cycle through possibilities
+          </p>
           <ChoiceGrid
             grid={board.board}
             possibility={possibility}
@@ -175,6 +182,7 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
           </Col>
         </Col>
       </Row>
+      <KeyboardShortcuts variant={KeyboardShortcutVariant.VOTE} />
       <ConfirmVote
         description={possibility ? describer(possibility) : undefined}
         show={showVote}

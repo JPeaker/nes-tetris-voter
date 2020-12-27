@@ -129,9 +129,9 @@
   width: 20rem;
 }
 
-.modal-dialog {
-  max-width: 66rem;
-  max-height: 40rem;
+.modal-dialog-create .modal-dialog {
+  max-width: 66rem !important;
+  max-height: 40rem !important;
 }
 
 .upload-button-wrapper {

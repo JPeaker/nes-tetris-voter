@@ -87,7 +87,7 @@ export default ({ show = false, hide, submit }: { show?: boolean, hide: () => vo
     });
   };
 
-  return <Modal show={show} onHide={hide} centered>
+  return <Modal show={show} onHide={hide} centered className="modal-dialog-create">
     <Modal.Header closeButton>
       <Modal.Title>Upload a screenshot</Modal.Title>
     </Modal.Header>
