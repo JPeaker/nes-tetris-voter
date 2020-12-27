@@ -3,8 +3,9 @@ import VotePage from './VotePage';
 import CreatePage from './CreatePage';
 import BrowsePage from './BrowsePage';
 import AboutPage from './AboutPage';
+import MyCreatedPage from './MyCreatedPage';
 import { Switch, Route, Link } from 'react-router-dom';
-import { Button, Container, Row, Form, FormControl, Nav, Navbar } from 'react-bootstrap';
+import { Button, Container, Form, FormControl, Nav, Navbar } from 'react-bootstrap';
 import { SearchIcon } from '@primer/octicons-react';
 import './App.css';
 
@@ -23,6 +24,7 @@ function App() {
     { paths: ['/', '/vote'], name: 'Random Vote' },
     { paths: ['/create'], name: 'Create' },
     { paths: ['/browse'], name: 'Browse' },
+    { paths: ['/created'], name: 'My Scenarios' },
     { paths: ['/about'], name: 'About' },
   ];
 
@@ -67,6 +69,9 @@ function App() {
           </Route>
           <Route path="/about">
             <AboutPage />
+          </Route>
+          <Route path="/created">
+            <MyCreatedPage />
           </Route>
           <Route path={['/', '/vote']}>
             <VotePage />

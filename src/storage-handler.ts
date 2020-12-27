@@ -5,6 +5,7 @@ export interface IStorageHandler {
   getVote: (id: string) => string | null;
   getVoted: () => string[];
   create: (id: string) => void;
+  getCreated: () => string[];
 }
 
 type BoardId = string;
@@ -57,5 +58,10 @@ export default class LocalStorageHandler implements IStorageHandler {
   getVoted(): string[] {
     const value = this.getValue();
     return Object.keys(value.votes);
+  }
+
+  getCreated(): string[] {
+    const value = this.getValue();
+    return value.created;
   }
 }

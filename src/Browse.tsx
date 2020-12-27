@@ -44,11 +44,11 @@ function Browse({ voted, recent, votedError, recentError, votedLoading, recentLo
             <CardDeck>{items.map((board, bIndex) => getCard(board, goToVote, bIndex >= index && bIndex < index + showCount))}</CardDeck>
           </Col>;
     const leftDisabled = loading || error || index === 0;
-    const rightDisabled = loading || error || index === voted.length - showCount;
+    const rightDisabled = loading || error || index === items.length - showCount;
     return <Row className="flex-row fluid align-items-center justify-content-center">
       <Col className="text-center align-content-center" xs={1} onClick={() => setIndex(Math.max(0, index - 1))}><ChevronLeftIcon className={`arrow ${leftDisabled ? 'disabled' : ''}`} size={48} /></Col>
       {content}
-      <Col className="text-center align-content-center" xs={1} onClick={() => setIndex(Math.min(index + 1, voted.length - showCount))}><ChevronRightIcon className={`arrow ${rightDisabled ? 'disabled' : ''}`} size={48} /></Col>
+      <Col className="text-center align-content-center" xs={1} onClick={() => setIndex(Math.min(index + 1, items.length - showCount))}><ChevronRightIcon className={`arrow ${rightDisabled ? 'disabled' : ''}`} size={48} /></Col>
     </Row>;
   };
 

@@ -18,8 +18,12 @@ export class BoardResolver {
   }
 
   @Query(() => [Board])
-  async boards(): Promise<Board[]> {
-    return await Board.find();
+  async boards(@Arg('include', () => [String], { nullable: true }) include: Array<string> | null = null): Promise<Board[]> {
+    if (include) {
+      return await Board.findByIds(include);
+    } else {
+      return await Board.find();
+    }
   }
 
   @Query(() => Board)

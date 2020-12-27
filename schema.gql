@@ -40,7 +40,7 @@ type Mutation {
 
 type Query {
   board(id: String!): Board!
-  boards: [Board!]!
+  boards(include: [String!]): [Board!]!
   mostRecentBoards: [Board!]!
   mostVotedBoards: [Board!]!
   possibility(id: String!): RelatedPossibility!
