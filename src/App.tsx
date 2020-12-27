@@ -1,8 +1,9 @@
 import React, { useRef, useState } from 'react';
 import VotePage from './VotePage';
 import CreatePage from './CreatePage';
+import BrowsePage from './BrowsePage';
 import { Switch, Route, Link } from 'react-router-dom';
-import { Button, Container, Form, FormControl, Nav, Navbar, Row } from 'react-bootstrap';
+import { Button, Container, Form, FormControl, Nav, Navbar } from 'react-bootstrap';
 import { SearchIcon } from '@primer/octicons-react';
 import './App.css';
 
@@ -20,7 +21,9 @@ function App() {
   const menuItems = [
     { paths: ['/', '/vote'], name: 'Random Vote' },
     { paths: ['/create'], name: 'Create' },
-  ]
+    { paths: ['/browse'], name: 'Browse' },
+  ];
+
   return (
     <Container className="p-0" fluid onKeyDown={focusSearch}>
         <Navbar bg="dark" variant="dark" expand="md">
@@ -56,6 +59,9 @@ function App() {
         <Switch>
           <Route path="/create">
             <CreatePage />
+          </Route>
+          <Route path="/browse">
+            <BrowsePage />
           </Route>
           <Route path={['/', '/vote']}>
             <VotePage />

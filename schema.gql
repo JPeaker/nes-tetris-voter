@@ -11,6 +11,7 @@ type Board {
   id: ID!
   nextPiece: Int!
   possibilities: [RelatedPossibility!]!
+  votes: Int!
 }
 
 input BoardInput {
@@ -40,6 +41,8 @@ type Mutation {
 type Query {
   board(id: String!): Board!
   boards: [Board!]!
+  mostRecentBoards: [Board!]!
+  mostVotedBoards: [Board!]!
   possibility(id: String!): RelatedPossibility!
   randomBoard(exclude: [String!]!): Board!
 }

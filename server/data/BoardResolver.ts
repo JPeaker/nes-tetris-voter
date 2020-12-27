@@ -1,8 +1,8 @@
-import { Arg, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { Arg, Field, FieldResolver, Int, Mutation, ObjectType, Query, Resolver, Root } from 'type-graphql';
 import { Board } from './entity/Board';
 import { BoardInput } from './BoardInput';
 import { findAllPossiblePositions } from '../position-finder';
-import { Orientation } from 'nes-tetris-representation';
+import { Grid, Orientation, Piece } from 'nes-tetris-representation';
 import { RelatedPossibility } from './entity/RelatedPossibility';
 import { Possibility } from './entity/Possibility';
 
@@ -98,5 +98,27 @@ export class BoardResolver {
 
     await existingBoard.remove();
     return true;
+  }
+
+  @Query(() => [Board])
+  async mostRecentBoards(): Promise<Board[]> {
+    return await Board.find({ take: 10, order: {
+      createdAt: 'DESC',
+    }});
+  }
+
+  @Query(() => [Board])
+  async mostVotedBoards(): Promise<Board[]> {
+    const result = await Board
+      .createQueryBuilder()
+      .select('Board.id')
+      .leftJoin('Board.possibilities', 'related_possibility')
+      .addSelect('sum(related_possibility.votes)', 'votesum')
+      .groupBy('Board.id')
+      .orderBy('votesum', 'DESC')
+      .limit(10)
+      .execute() as { Board_id: string }[];
+    console.log(result.length);
+    return (await Board.findByIds(result.map(res => res.Board_id))).sort((b1, b2) => b2.votes() - b1.votes());
   }
 };

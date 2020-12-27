@@ -2,8 +2,8 @@ import { BlockValue, getPieceGrid, Grid, Piece } from 'nes-tetris-representation
 import { createCanvas, loadImage } from 'canvas';
 
 export default async (grid: Grid, currentPiece: Piece, nextPiece: Piece): Promise<Buffer> => {
-  const width = 630;
-  const height = 630;
+  const width = 640;
+  const height = 640;
   const blockSize = height / 20;
   const canvas = createCanvas(width, height);;
   const context = canvas.getContext('2d');
@@ -31,6 +31,10 @@ export default async (grid: Grid, currentPiece: Piece, nextPiece: Piece): Promis
       }
     });
   });
+
+  context.lineWidth = 4;
+  context.strokeStyle = '#ddd';
+  context.strokeRect(0, 0, blockSize * 10 + context.lineWidth, blockSize * 20 + context.lineWidth);
 
   const currentPieceGrid = getPieceGrid(currentPiece);
   const nextPieceGrid = getPieceGrid(nextPiece);

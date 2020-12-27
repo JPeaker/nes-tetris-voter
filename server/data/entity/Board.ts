@@ -1,6 +1,6 @@
 import { Grid, Piece } from 'nes-tetris-representation';
 import { ObjectType, Field, ID, Int, GraphQLISODateTime } from 'type-graphql';
-import { Entity, BaseEntity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, BaseEntity, Column, PrimaryGeneratedColumn, OneToMany, AfterLoad } from 'typeorm';
 import { RelatedPossibility } from './RelatedPossibility';
 
 @Entity({ name: 'boards' })
@@ -28,4 +28,10 @@ export class Board extends BaseEntity {
     @Field(() => [[Int]])
     @Column({ type: 'int', array: true, nullable: false })
     board!: Grid;
+
+    @AfterLoad()
+    @Field(() =>  Int)
+    votes() {
+        return this.possibilities ? this.possibilities.reduce((acc, poss) => acc + poss.votes, 0) : 0;
+    }
 }

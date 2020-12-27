@@ -16,4 +16,6 @@ export interface Board {
   currentPiece: Piece;
   nextPiece: Piece;
   possibilities: Possibility[];
+  createdAt?: Date;
+  votes?: number;
 }

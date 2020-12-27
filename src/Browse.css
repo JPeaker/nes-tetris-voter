@@ -1,0 +1,23 @@
+.arrow {
+  cursor: pointer;
+}
+
+.arrow.disabled {
+  fill: #ddd;
+  cursor: unset;
+}
+
+.card-img-top {
+  padding-top: 1rem;
+  max-width: 10rem;
+  margin: auto;
+}
+
+.card {
+  text-align: center;
+}
+
+.card:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
