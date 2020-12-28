@@ -20,3 +20,20 @@
   bottom: 15rem;
   transform: translate(-50%, -50%);
 }
+
+@media (max-width: 575px) {
+  .tetris-grid-wrapper {
+    height: unset;
+    background-image: unset;
+    margin-bottom: 1rem;
+  }
+
+  .next-piece-vote {
+    left: 18rem;
+    bottom: 8rem;
+  }
+
+  .next-piece-vote::before {
+    content: 'Next:'
+  }
+}

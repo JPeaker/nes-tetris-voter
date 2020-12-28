@@ -13,6 +13,7 @@ import VoteSummary from './VoteSummary';
 import { ShareAndroidIcon } from '@primer/octicons-react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import KeyboardShortcuts, { KeyboardShortcutVariant } from './KeyboardShortcuts';
+import { isXsOrSmaller } from './media-queries';
 
 export type ConsideredPlacement = {
   placement?: { row: RowIndex, column: ColumnIndex },
@@ -126,24 +127,28 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
     }
   }, [true]);
 
+  const isXsSmall = isXsOrSmaller();
+
   return (
     <Container tabIndex={-1} style={{ outline: 'none' }} ref={ref} onKeyDown={handler} fluid>
       <Row className="mt-4 flex-row fluid board-title-container">
         <h3 className="board-title">Board #{board.id}</h3>
         <div className="board-title-buttons">
           <Link to="/vote">
-            <Button variant="outline-primary" style={{ marginRight: '4px' }}>Fetch new scenario</Button>
+            <Button variant="outline-primary" style={{ marginRight: '4px' }}>{
+              isXsSmall ? 'New' : 'Fetch new scenario'
+            }</Button>
           </Link>
           <Button variant="outline-primary" onClick={copyToClipboard}>
-            <span style={{ marginRight: '4px' }}>{ showCopied ? 'Copied!' : 'Copy link to clipboard' }</span>
+            <span style={{ marginRight: '4px' }}>{ showCopied ? 'Copied!' : isXsSmall ? 'Copy' : 'Copy link to clipboard' }</span>
             { !showCopied ? <ShareAndroidIcon size={16} /> : undefined }
           </Button>
         </div>
       </Row>
       <Row className="flex-row fluid align-items-center justify-content-center">
-        <Col xs={6} xl={{ span: 5, offset: 1 }}>
-          <h4>Grid Preview</h4>
-          <p style={{ maxWidth: '30rem' }}>
+        <Col xs={12} sm={6} xl={{ span: 5, offset: 1 }}>
+          <h4 className="d-none d-lg-block">Grid Preview</h4>
+          <p className="d-none d-lg-block" style={{ maxWidth: '30rem' }}>
             Hover over potential placements to see what they look like. Use the WASD keys to prefer an orientation and cycle through possibilities
           </p>
           <ChoiceGrid
@@ -155,10 +160,10 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
             onClick={() => setShowVote(true)}
           />
         </Col>
-        <Col xs={6}>
+        <Col xs={12} sm={6}>
           <Col xs={12}>
-            <h4>{votedFor ? 'Top Rated Placements' : 'Placement List'}</h4>
-            <p>{ votedFor
+            <h4 className="d-none d-lg-block">{votedFor ? 'Top Rated Placements' : 'Placement List'}</h4>
+            <p className="d-none d-lg-block">{ votedFor
               ? 'Here are the top 3 placements according to other votes (and yours)'
               : 'Select the placement in this list that you think is the best move'
             }</p>
@@ -182,7 +187,7 @@ function Vote({ board, voteFor, votedFor }: VoteProps) {
           </Col>
         </Col>
       </Row>
-      <KeyboardShortcuts variant={KeyboardShortcutVariant.VOTE} />
+      <KeyboardShortcuts className="d-none d-lg-block" variant={KeyboardShortcutVariant.VOTE} />
       <ConfirmVote
         description={possibility ? describer(possibility) : undefined}
         show={showVote}

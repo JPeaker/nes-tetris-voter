@@ -4,7 +4,7 @@ import { BlockValue, ColumnIndex, filledGrid, getPiece, getPieceGrid, Grid, Piec
 import { BlockProps, TetrisGrid } from 'nes-tetris-components';
 import './ChoiceGrid.css';
 import { Possibility } from './CommonModels';
-import { isMdOrSmaller, isSmOrSmaller, isXlOrLarger } from './media-queries';
+import { isMdOrSmaller, isSmOrSmaller, isXlOrLarger, isXsOrSmaller } from './media-queries';
 
 interface ChoiceGridProps {
   grid: Grid;
@@ -31,11 +31,10 @@ function ChoiceGrid({ grid, possibility, nextPiece, setConsideredRowColumn, onCl
     return props;
   }
 
-  const pieceLabel = PieceList.find(p => p.value === nextPiece)!.label;
-
+  const xsOrSmaller = isXsOrSmaller();
   const smOrSmaller = isSmOrSmaller();
   const mdOrSmaller = isMdOrSmaller();
-  const blockSize = smOrSmaller ? 1.25 : mdOrSmaller ? 1.5 : 1.63334;
+  const blockSize = xsOrSmaller ? 0.8 : smOrSmaller ? 1.25 : mdOrSmaller ? 1.5 : 1.63334;
 
   return (
     <div className="tetris-grid-wrapper">

@@ -3,6 +3,12 @@
   border: 1px solid #aaa;
 }
 
+@media (max-width: 575px) {
+  .possibility-list {
+    height: 12rem;
+  }
+}
+
 .current-text {
   width: 8rem;
   position: relative;

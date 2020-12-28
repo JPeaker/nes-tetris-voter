@@ -10,6 +10,7 @@ export enum KeyboardShortcutVariant {
 
 interface KeyboardShortcutsProps {
   variant: KeyboardShortcutVariant,
+  className?: string;
 }
 
 interface Shortcut {
@@ -47,7 +48,7 @@ const variantShortcuts: { [key: string]: Shortcut[] } = {
   ],
 }
 
-function KeyboardShortcuts({ variant }: KeyboardShortcutsProps) {
+function KeyboardShortcuts({ variant, className }: KeyboardShortcutsProps) {
   const [showModal, setShowModal] = useState<boolean>(false);
 
   useEffect(() => {
@@ -63,7 +64,7 @@ function KeyboardShortcuts({ variant }: KeyboardShortcutsProps) {
     return () => window.removeEventListener('keyup', kHandler);
   });
 
-  return <div onClick={() => setShowModal(true)} className="keyboard-shortcut-wrapper">
+  return <div onClick={() => setShowModal(true)} className={`keyboard-shortcut-wrapper ${className || ''}`}>
     <img className="keyboard-shortcut-icon" src={keyboard} />
     <h5>Keyboard shortcuts (K)</h5>
     <Modal className="modal-dialog-keyboard" centered show={showModal} onHide={() => setShowModal(false)}>
@@ -76,7 +77,7 @@ function KeyboardShortcuts({ variant }: KeyboardShortcutsProps) {
             </tr>
           </thead>
           <tbody>
-            {(variantShortcuts[variant] as Shortcut[]).concat(variantShortcuts.all).map(shortcut => <tr>
+            {(variantShortcuts[variant] as Shortcut[]).concat(variantShortcuts.all).map(shortcut => <tr key={shortcut.key}>
               <td>{shortcut.key}</td>
               <td>{shortcut.description}</td>
             </tr>)}
