@@ -23,11 +23,27 @@ const canPieceMove = (position: BoardPosition, grid: Grid): boolean => {
   }
 };
 
+const getClockwiseRotationOrientation = (orientation: Orientation) => {
+  switch (orientation) {
+    case Orientation.Down:
+      return Orientation.Left;
+    case Orientation.Left:
+      return Orientation.Up;
+    case Orientation.Up:
+      return Orientation.Right;
+    case Orientation.Right:
+      return Orientation.Down;
+  }
+}
+
+const getCounterClockwiseRotationOrientation = (orientation: Orientation) =>
+  getClockwiseRotationOrientation(getClockwiseRotationOrientation(getClockwiseRotationOrientation(orientation)));
+
 const canMoveLeft = (piece: BoardPosition, grid: Grid): boolean => canPieceMove({ ...piece, column: piece.column - 1 as ColumnIndex }, grid);
 const canMoveRight = (piece: BoardPosition, grid: Grid): boolean => canPieceMove({ ...piece, column: piece.column + 1 as ColumnIndex }, grid);
 const canMoveDown = (piece: BoardPosition, grid: Grid,): boolean => canPieceMove({ ...piece, row: piece.row + 1 as ColumnIndex }, grid);
-const canRotateClockwise = (piece: BoardPosition, grid: Grid): boolean => canPieceMove({ ...piece, orientation: (piece.orientation + 1) % 4 as Orientation }, grid);
-const canRotateCounterClockwise = (piece: BoardPosition, grid: Grid): boolean => canPieceMove({ ...piece, orientation: (piece.orientation + 3) % 4 as Orientation }, grid);
+const canRotateClockwise = (piece: BoardPosition, grid: Grid): boolean => canPieceMove({ ...piece, orientation: getClockwiseRotationOrientation(piece.orientation) }, grid);
+const canRotateCounterClockwise = (piece: BoardPosition, grid: Grid): boolean => canPieceMove({ ...piece, orientation: getCounterClockwiseRotationOrientation(piece.orientation) }, grid);
 
 const serializePosition = ({ row, column, orientation, type }: BoardPosition): string => `${row},${column},${orientation},${type}`;
 const deserializePosition = (serial: string): BoardPosition => {
@@ -44,33 +60,14 @@ const deserializePosition = (serial: string): BoardPosition => {
 const moveLeft = (piece: BoardPosition): BoardPosition => ({ ...piece, column: piece.column-1 as ColumnIndex });
 const moveRight = (piece: BoardPosition): BoardPosition => ({ ...piece, column: piece.column+1 as ColumnIndex });
 const moveDown = (piece: BoardPosition): BoardPosition => ({ ...piece, row: piece.row+1 as RowIndex });
-const rotateClockwise = (piece: BoardPosition): BoardPosition => {
-  let newOrientation: Orientation;
-  switch (piece.orientation) {
-    case Orientation.Up:
-      newOrientation = Orientation.Right;
-      break;
-    case Orientation.Right:
-      newOrientation = Orientation.Down;
-      break;
-    case Orientation.Down:
-      newOrientation = Orientation.Left;
-      break;
-    case Orientation.Left:
-      newOrientation = Orientation.Up;
-      break;
-    default:
-      throw new Error('Unknown orientation');
-  }
-
-  return { ...piece, orientation: newOrientation };
-};
+const rotateClockwise = (piece: BoardPosition): BoardPosition => ({ ...piece, orientation: getClockwiseRotationOrientation(piece.orientation) });
 const rotateCounterClockwise = (position: BoardPosition): BoardPosition => rotateClockwise(rotateClockwise(rotateClockwise(position)));
 
 const subFindPositions = (visitedPositions: Set<string>, grid: Grid): Set<string> => {
   const totalNewPositions = new Set<string>(visitedPositions);
   visitedPositions.forEach(str => {
     const position = deserializePosition(str);
+
     if (canMoveLeft(position, grid) && !totalNewPositions.has(serializePosition(moveLeft(position)))) {
       totalNewPositions.add(serializePosition(moveLeft(position)));
     }

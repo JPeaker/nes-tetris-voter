@@ -1,5 +1,6 @@
-import { Grid, Orientation, PieceList } from 'nes-tetris-representation';
-import { findAllPossiblePositions } from '../src/position-finder';
+import { BlockPlace, getPiece, Grid, Orientation, Piece, PieceList } from 'nes-tetris-representation';
+import { findAllPossiblePositions } from '../server/position-finder';
+import _ from 'lodash';
 
 describe('findAllPossiblePositions', () => {
   describe('does not conflict any blocks on test grid 1', () => {
@@ -45,5 +46,54 @@ describe('findAllPossiblePositions', () => {
         });
       });
     })
+  });
+
+  it('finds the J spin in test grid 2', () => {
+    const testGrid1: Grid = [
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [1,1,1,0,0,0,0,3,0,0],
+      [1,3,3,1,0,0,0,3,3,3],
+      [2,3,3,1,0,0,1,3,1,3],
+      [2,2,2,0,0,0,1,1,1,3],
+      [3,3,3,3,0,0,3,2,1,1],
+      [2,3,1,1,0,3,3,2,2,2],
+      [2,2,2,1,0,3,3,3,3,3]
+    ];
+
+    const blocksToSorted = (blocks: { row: number, column: number }[]) => blocks.sort((b1, b2) => b2.row - b1.row || b2.column - b1.column);
+    const positions = findAllPossiblePositions({ row: 2, column: 5, orientation: Orientation.Down, type: Piece.J }, testGrid1)
+      .map(p => [
+        { row: p.block1Y, column: p.block1X },
+        { row: p.block2Y, column: p.block2X },
+        { row: p.block3Y, column: p.block3X },
+        { row: p.block4Y, column: p.block4X },
+      ]);
+    const sortedMapped = positions.map(blocksToSorted).map(x => x.reduce((acc, { row, column }) => acc + `[${row},${column}]`, ''));
+
+    const expectedBlocks = getPiece({
+      type: Piece.J,
+      row: 18,
+      column: 4,
+      orientation: Orientation.Down,
+    }).blocks
+      .map(block => ({ row: block.row, column: block.column }))
+      .sort((b1, b2) => b2.row - b1.row || b2.column - b1.column)
+      .reduce((acc, { row, column }) => acc + `[${row},${column}]`, '');
+
+    expect(sortedMapped.includes(expectedBlocks)).toBe(true);
   });
 });

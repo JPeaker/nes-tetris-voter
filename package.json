@@ -15,7 +15,8 @@
     "migrate": "npm run typeorm migration:run",
     "revert": "npm run typeorm migration:revert",
     "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -57,6 +58,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^2.1.5",
     "reflect-metadata": "^0.1.13",
+    "ts-jest": "^26.4.4",
     "ts-node-dev": "^1.0.0",
     "type-graphql": "^1.1.1",
     "typeorm": "^0.2.29",
