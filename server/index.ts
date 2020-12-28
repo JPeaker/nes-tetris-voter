@@ -11,9 +11,11 @@ import { RelatedPossibilityResolver } from './data/RelatedPossibilityResolver';
 import { filledGrid, Piece } from 'nes-tetris-representation';
 import thumbnailCreator from './thumbnail-creator';
 import fs from 'fs';
+import discord from './discord';
 
 const app = express();
 const port = process.env.PORT || 5000;
+const location = process.env.NODE_ENV === 'production' ? 'https://nes-tetris-voter.herokuapp.com' : 'http://localhost';
 const ADMIN_AUTH = process.env.ADMIN_AUTH;
 
 app.use(bodyParser.json());
@@ -34,7 +36,6 @@ const main = async () => {
     context: ({ req }) => {
       const token = req.headers.authorization || '';
       const isAdmin = token === ADMIN_AUTH;
-      console.log(isAdmin, token);
       return { isAdmin };
     }
   });
@@ -45,6 +46,7 @@ const main = async () => {
 main().catch(error => console.log(error));
 
 const getPage = (id: string, url: string, callback: (data: string) => void) => {
+  console.log('GET PAGE', url);
   const filePath = path.join(__dirname, '../build', 'index.html');
 
   fs.readFile(filePath, 'utf8', (err, data) => {
@@ -53,8 +55,8 @@ const getPage = (id: string, url: string, callback: (data: string) => void) => {
     }
 
     data = data.replace(/{{title}}/, `NES Tetris: Vote #${id}`);
-    data = data.replace(/{{thumbnailUrl}}/, `https://nes-tetris-voter.herokuapp.com/vote/${id}/thumbnail`);
-    data = data.replace(/{{url}}/, `https://nes-tetris-voter.herokuapp.com${url}`);
+    data = data.replace(/{{thumbnailUrl}}/, `${location}/vote/${id}/thumbnail`);
+    data = data.replace(/{{url}}/, `${location}${url}`);
 
     callback(data);
   });
@@ -75,6 +77,8 @@ app.get('/vote/:id/thumbnail', async (req, res) => {
   });
   res.end(image);
 });
+
+app.use('/api/discord', discord);
 
 app.get('/', (req, res) => getPage(req.query.id as string, req.url, (data: string) => res.send(data)));
 

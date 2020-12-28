@@ -147,7 +147,6 @@ export class BoardResolver {
       .orderBy('votesum', 'DESC')
       .limit(10)
       .execute() as { Board_id: string }[];
-    console.log(result.length);
     return (await Board.findByIds(result.map(res => res.Board_id))).sort((b1, b2) => b2.votes() - b1.votes());
   }
 };

@@ -44,6 +44,7 @@ function App() {
                 ))
               }
             </Nav>
+            <a href="http://localhost:5000/api/discord/login">Login</a>
             <Form inline>
               <FormControl
                 type="search"
