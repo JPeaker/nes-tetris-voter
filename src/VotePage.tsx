@@ -91,7 +91,8 @@ function VotePage() {
   }
 
   if (randomError) {
-    return <ErrorPage message={randomError.message} />;
+    const error = randomError.message === 'No unvoted boards remaining' ? 'It looks like you\'ve voted on every scenario we have. Why not go and create some more?' : randomError.message;
+    return <ErrorPage message={error} />;
   }
 
   if (randomData) {

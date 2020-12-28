@@ -35,6 +35,10 @@ export class BoardResolver {
         .orderBy('RANDOM()').limit(1).getOne();
 
     if (!slimBoard) {
+      if (exclude.length > 0) {
+        throw new Error('No unvoted boards remaining');
+      }
+
       return undefined;
     }
 
