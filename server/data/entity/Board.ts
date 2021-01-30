@@ -29,6 +29,10 @@ export class Board extends BaseEntity {
     @Column({ type: 'int', array: true, nullable: false })
     board!: Grid;
 
+    @Field(() => ID, { nullable: true })
+    @Column('uuid', { nullable: true })
+    createdBy!: string | null;
+
     @AfterLoad()
     @Field(() =>  Int)
     votes() {

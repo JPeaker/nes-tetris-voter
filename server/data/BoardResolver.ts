@@ -5,6 +5,7 @@ import { findAllPossiblePositions } from '../position-finder';
 import { Orientation } from 'nes-tetris-representation';
 import { RelatedPossibility } from './entity/RelatedPossibility';
 import { Possibility } from './entity/Possibility';
+import { User } from './entity/User';
 
 @Resolver(() => Board)
 export class BoardResolver {
@@ -57,7 +58,7 @@ export class BoardResolver {
   }
 
   @Mutation(() => Board)
-  async createBoard(@Arg('board', () => BoardInput) boardInput: BoardInput): Promise<Board> {
+  async createBoard(@Arg('board', () => BoardInput) boardInput: BoardInput, @Ctx() ctx: { user: User | null }): Promise<Board> {
     if (boardInput.board.length !== 22 || boardInput.board.some(row => row.length !== 10)) {
       throw new Error(`Invalid board format ${JSON.stringify(boardInput.board)}`);
     }
@@ -72,8 +73,8 @@ export class BoardResolver {
       throw new Error(`Board exists with id: ${existingBoard.id}`);
     }
 
-    // Save the board
     const dbBoard = Board.create(boardInput);
+    dbBoard.createdBy = ctx.user && ctx.user.id;
 
     // Save all the related possibilities
     const possibilities = findAllPossiblePositions({

@@ -1,3 +1,4 @@
+import { StringLiteralType } from 'typescript';
 import { Board, Possibility } from './CommonModels';
 
 export interface IStorageHandler {
@@ -17,20 +18,35 @@ interface LocalStorageValue {
   }
 }
 
+interface SeedData {
+  created: string[];
+  voted: string[];
+}
+
 export default class LocalStorageHandler implements IStorageHandler {
   static key = 'TETRIS-VOTING';
 
   private getValue(): LocalStorageValue {
-    const item = localStorage.getItem(LocalStorageHandler.key);
-
-    if (!item) {
-      return {
-        created: [],
-        votes: {},
-      };
+    const seedData = (window as unknown as { seedData: SeedData }).seedData;
+    if (!seedData.created) {
+      seedData.created = [];
     }
+    if (!seedData.voted) {
+      seedData.voted = [];
+    }
+    console.log(111, seedData);
+    const item = localStorage.getItem(LocalStorageHandler.key);
+    const parsedItem: LocalStorageValue = item ? JSON.parse(item) : { created: [], votes: {} };
+    const returnVal = {
+      created: Array.from(new Set(seedData.created.concat(parsedItem.created))),
+      votes: parsedItem.votes,
+    };
 
-    return JSON.parse(item) as LocalStorageValue;
+    seedData.voted.forEach(voted => {
+      returnVal.votes[voted] = '1';
+    })
+    console.log(returnVal);
+    return returnVal;
   }
 
   private setValue(value: LocalStorageValue) {

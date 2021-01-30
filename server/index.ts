@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
@@ -12,6 +13,8 @@ import { filledGrid, Piece } from 'nes-tetris-representation';
 import thumbnailCreator from './thumbnail-creator';
 import fs from 'fs';
 import discord from './discord';
+import { Board } from './data/entity/Board';
+import { User } from './data/entity/User';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -20,6 +23,7 @@ const ADMIN_AUTH = process.env.ADMIN_AUTH;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(cors());
 
 const main = async () => {
@@ -33,10 +37,16 @@ const main = async () => {
   const server = new ApolloServer({
     schema,
     introspection: true,
-    context: ({ req }) => {
+    context: async ({ req }) => {
       const token = req.headers.authorization || '';
       const isAdmin = token === ADMIN_AUTH;
-      return { isAdmin };
+      const userId = req.cookies.voterUser || null;
+
+      let user: User | null = null;
+      if (userId) {
+        user = await User.findOne(userId) || null;
+      }
+      return { isAdmin, user };
     }
   });
   server.applyMiddleware({ app });
@@ -45,15 +55,27 @@ const main = async () => {
 // tslint:disable-next-line:no-console
 main().catch(error => console.log(error));
 
-const getPage = (id: string, url: string, callback: (data: string) => void) => {
-  console.log('GET PAGE', url);
+const getPage = (id: string, url: string, callback: (data: string) => void, userId: string | null) => {
   const filePath = path.join(__dirname, '../build', 'index.html');
 
-  fs.readFile(filePath, 'utf8', (err, data) => {
+  fs.readFile(filePath, 'utf8', async (err, data) => {
     if (err) {
       return console.log(err);
     }
 
+    let seedData: { created: string[], voted: string[] } = { created: [], voted: [] };
+    if (userId) {
+      const user = await User.findOne({ where: { id: userId } });
+      if (user) {
+        const createdBoard = await Board.find({ where: { createdBy: userId }});
+        seedData = {
+          created: createdBoard.map(b => b.id),
+          voted: user.voted,
+        };
+      }
+    }
+
+    data = data.replace(/{ created: [], voted: [] }/, JSON.stringify(seedData));
     data = data.replace(/{{title}}/, `NES Tetris: Vote #${id}`);
     data = data.replace(/{{thumbnailUrl}}/, `${location}/vote/${id}/thumbnail`);
     data = data.replace(/{{url}}/, `${location}${url}`);
@@ -80,11 +102,11 @@ app.get('/vote/:id/thumbnail', async (req, res) => {
 
 app.use('/api/discord', discord);
 
-app.get('/', (req, res) => getPage(req.query.id as string, req.url, (data: string) => res.send(data)));
+app.get('/', (req, res) => getPage(req.query.id as string, req.url, (data: string) => res.send(data), req.cookies.voterUser));
 
 app.use(express.static(path.join(__dirname, '../build')));
 
-app.get('/*', (req, res) => getPage(req.query.id as string, req.url, (data: string) => res.send(data)));
+app.get('/*', (req, res) => getPage(req.query.id as string, req.url, (data: string) => res.send(data), req.cookies.voterUser));
 
 // tslint:disable-next-line:no-console
 app.listen(port, () => console.log(`Listening on port ${port}`));

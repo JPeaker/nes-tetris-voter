@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID, Int } from 'type-graphql';
-import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column, JoinColumn } from 'typeorm';
 import { Coordinate } from '../Coordinate';
 import { Board } from './Board';
 import { Possibility } from './Possibility';
@@ -27,6 +27,7 @@ export class RelatedPossibility extends BaseEntity {
   type() { return this.possibility.type }
 
   @ManyToOne(() => Board, board => board.possibilities)
+  @JoinColumn()
   board!: Board;
 
   @ManyToOne(() => Possibility, { eager: true })

@@ -78,13 +78,13 @@ const storageHandler: IStorageHandler = new LocalStorageHandler();
 
 function VotePage() {
   const query = new URLSearchParams(useLocation().search);
+  const id = query.get('id');
   const [votedFor, setVotedFor] = useState<Possibility | null>(null);
   const [getBoard, { data, loading, error, refetch }] = useLazyQuery<{ board: Board }, { id: string }>(GET_BOARD_QUERY);
-  const [getRandomBoard, { data: randomData, loading: randomLoading, error: randomError, refetch: randomRefetch }] = useLazyQuery<{ randomBoard: Board }, { exclude: string[] }>(GET_RANDOM_BOARD_QUERY);
+  const [getRandomBoard, { data: randomData, loading: randomLoading, error: randomError }] = useLazyQuery<{ randomBoard: Board }, { exclude: string[] }>(GET_RANDOM_BOARD_QUERY);
   const [addVote] = useMutation<VoteData>(ADD_VOTE);
   const [removeVote] = useMutation<VoteData>(REMOVE_VOTE);
 
-  const id = query.get('id');
 
   if (randomLoading) {
     return <Loading message="Loading Random Scenario" />;
@@ -117,8 +117,9 @@ function VotePage() {
         return;
       }
 
-      if (votedFor) {
-        await removeVote({ variables: { id: votedFor.id }});
+      const adjustedVotedFor = votedFor || data.board.possibilities.find(p => id && p.id === storageHandler.getVote(id));
+      if (adjustedVotedFor) {
+        await removeVote({ variables: { id: adjustedVotedFor.id }});
       }
 
       if (newVoteFor) {
