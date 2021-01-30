@@ -9,7 +9,7 @@ import { isMdOrSmaller, isSmOrSmaller, isXlOrLarger, isXsOrSmaller } from './med
 interface ChoiceGridProps {
   grid: Grid;
   possibility: Possibility;
-  nextPiece: Piece;
+  nextPiece: Piece | null;
   setConsideredRowColumn: (row: RowIndex, columm: ColumnIndex) => void;
   onClick: () => void;
   freezeHover?: boolean;
@@ -45,7 +45,11 @@ function ChoiceGrid({ grid, possibility, nextPiece, setConsideredRowColumn, onCl
         blockSizeInRem={blockSize}
         getBlockProps={getBlockProps}
       />
-      <TetrisGrid grid={getPieceGrid(nextPiece)} hideTopTwoRows={false} blockSizeInRem={blockSize * 3/4} className="next-piece-vote" />
+      {
+        nextPiece !== null
+          ? <TetrisGrid grid={getPieceGrid(nextPiece)} hideTopTwoRows={false} blockSizeInRem={blockSize * 3/4} className="next-piece-vote" />
+          : null
+      }
     </div>
   );
 }

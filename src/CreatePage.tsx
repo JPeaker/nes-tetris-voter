@@ -8,7 +8,7 @@ import Loading from './Loading';
 import LocalStorageHandler, { IStorageHandler } from './storage-handler';
 
 const CREATE_BOARD = gql`
-  mutation createBoard($grid: [[Int!]!]!, $currentPiece: Int!, $nextPiece: Int!) {
+  mutation createBoard($grid: [[Int!]!]!, $currentPiece: Int!, $nextPiece: Int) {
     createBoard(board: { board: $grid, currentPiece: $currentPiece, nextPiece: $nextPiece }) {
       id
     }
@@ -43,7 +43,7 @@ function CreatePage() {
     return <Loading message="Creating..." />
   }
 
-  const createBoardArg = async (grid: Grid, currentPiece: Piece, nextPiece: Piece) => {
+  const createBoardArg = async (grid: Grid, currentPiece: Piece, nextPiece: Piece | null) => {
     const result = await createBoard({ variables: {
       grid,
       currentPiece,

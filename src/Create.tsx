@@ -44,6 +44,7 @@ const setNextTools = [
   CreateToolType.SELECT_NEXT_Z,
   CreateToolType.SELECT_NEXT_J,
   CreateToolType.SELECT_NEXT_L,
+  CreateToolType.SELECT_NEXT_NONE,
 ];
 
 const mapToolToMode = (tool: CreateToolType) => {
@@ -67,7 +68,7 @@ const getDefaultTool = (mode: CreateMode) => {
   }
 };
 
-const getPieceFromTool = (tool: CreateToolType): Piece => {
+const getPieceFromTool = (tool: CreateToolType): Piece | null => {
   switch (tool) {
     case CreateToolType.SELECT_CURRENT_T:
     case CreateToolType.SELECT_NEXT_T:
@@ -90,10 +91,52 @@ const getPieceFromTool = (tool: CreateToolType): Piece => {
     case CreateToolType.SELECT_CURRENT_L:
     case CreateToolType.SELECT_NEXT_L:
       return Piece.L;
+    case CreateToolType.SELECT_NEXT_NONE:
+      return null;
     default:
       throw new Error('Unknown type to turn to piece');
   }
 }
+
+const getCurrentToolFromPiece = (piece: Piece) => {
+  switch (piece) {
+    case Piece.I:
+      return CreateToolType.SELECT_CURRENT_I;
+    case Piece.J:
+      return CreateToolType.SELECT_CURRENT_J;
+    case Piece.L:
+      return CreateToolType.SELECT_CURRENT_L;
+    case Piece.T:
+      return CreateToolType.SELECT_CURRENT_T;
+    case Piece.S:
+      return CreateToolType.SELECT_CURRENT_S;
+    case Piece.Z:
+      return CreateToolType.SELECT_CURRENT_Z;
+    case Piece.O:
+      return CreateToolType.SELECT_CURRENT_O;
+  }
+};
+
+const getNextToolFromPiece = (piece: Piece | null) => {
+  switch (piece) {
+    case Piece.I:
+      return CreateToolType.SELECT_NEXT_I;
+    case Piece.J:
+      return CreateToolType.SELECT_NEXT_J;
+    case Piece.L:
+      return CreateToolType.SELECT_NEXT_L;
+    case Piece.T:
+      return CreateToolType.SELECT_NEXT_T;
+    case Piece.S:
+      return CreateToolType.SELECT_NEXT_S;
+    case Piece.Z:
+      return CreateToolType.SELECT_NEXT_Z;
+    case Piece.O:
+      return CreateToolType.SELECT_NEXT_O;
+    case null:
+      return CreateToolType.SELECT_NEXT_NONE;
+  }
+};
 
 const getInstructions = (tool: CreateToolType): JSX.Element => {
   switch (tool) {
@@ -134,17 +177,18 @@ const getInstructions = (tool: CreateToolType): JSX.Element => {
     case CreateToolType.SELECT_NEXT_Z:
     case CreateToolType.SELECT_NEXT_J:
     case CreateToolType.SELECT_NEXT_L:
+    case CreateToolType.SELECT_NEXT_NONE:
       return <Card.Text>
         Select the "next" piece that is known in your situation
         <br /><br />
-        This could affect potential adjustments for the current piece
+        This could affect potential adjustments for the current piece. You can choose "None" if you don't want to consider adjustments.
       </Card.Text>;
     default:
       throw new Error('Unknown tool type');
   }
 };
 
-function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece, nextPiece: Piece) => void }) {
+function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece, nextPiece: Piece | null) => void }) {
   const [tool, setTool] = useState<CreateToolType>(getDefaultTool(CreateMode.SET_GRID));
   const [grid, setGrid] = useState<Grid>(emptyGrid);
   const [currentPiece, setCurrentPiece] = useState<Piece | null>(null);
@@ -195,9 +239,9 @@ function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece
   };
 
   const hasFullRow = grid.some(row => row.every(block => block !== BlockValue.EMPTY));
-  const canCreate = !hasFullRow && currentPiece !== null && nextPiece !== null;
+  const canCreate = !hasFullRow && currentPiece !== null;
 
-  const pieceHandler = (piece: Piece, currentTool: CreateToolType, nextTool: CreateToolType) => () => {
+  const pieceHandler = (piece: Piece | null, currentTool: CreateToolType, nextTool: CreateToolType) => () => {
     const mode = mapToolToMode(tool);
     if (mode === CreateMode.SELECT_CURRENT_PIECE) {
       setTool(currentTool);
@@ -209,8 +253,8 @@ function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece
   };
   const handler = (event: React.KeyboardEvent<HTMLDivElement>) => inputHandler({
     q: () => setTool(CreateToolType.ADD_COLUMNS),
-    w: () => setTool(CreateToolType.SELECT_CURRENT_T),
-    e: () => setTool(CreateToolType.SELECT_NEXT_T),
+    w: () => setTool(currentPiece !== null ? getCurrentToolFromPiece(currentPiece) : CreateToolType.SELECT_CURRENT_T),
+    e: () => setTool(getNextToolFromPiece(nextPiece)),
     1: inputFocusColumn(0),
     2: inputFocusColumn(1),
     3: inputFocusColumn(2),
@@ -232,6 +276,7 @@ function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece
     z: pieceHandler(Piece.Z, CreateToolType.SELECT_CURRENT_Z, CreateToolType.SELECT_NEXT_Z),
     j: pieceHandler(Piece.J, CreateToolType.SELECT_CURRENT_J, CreateToolType.SELECT_NEXT_J),
     l: pieceHandler(Piece.L, CreateToolType.SELECT_CURRENT_L, CreateToolType.SELECT_NEXT_L),
+    n: () => mapToolToMode(tool) === CreateMode.SELECT_NEXT_PIECE ? setTool(CreateToolType.SELECT_NEXT_NONE) : undefined,
     enter: () => { canCreate && createBoard(grid, currentPiece!, nextPiece!) },
   }, event);
 
@@ -285,10 +330,10 @@ function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece
                 <a className="underline" href="#">Select a current piece</a>
               </div>
               <div onClick={() => setTool(CreateToolType.SELECT_NEXT_T)}>
-                { nextPiece === null ? <XIcon className="x-icon" size={24} /> : <CheckIcon className="check-icon" size={24} /> }
-                <a className="underline" href="#">Select a next piece</a>
+                <CheckIcon className="check-icon" size={24} />
+                <a className="underline" href="#">Select a next piece if you have one. Maybe you don't want to consider adjustments, in which case leave it empty</a>
               </div>
-              <Button disabled={!canCreate} className="create-button" onClick={() => canCreate && createBoard(grid, currentPiece!, nextPiece!)}>Create</Button>
+              <Button disabled={!canCreate} className="create-button" onClick={() => canCreate && createBoard(grid, currentPiece!, nextPiece)}>Create</Button>
             </Card.Footer>
           </Card>
         </Col>
@@ -296,8 +341,8 @@ function Create({ createBoard }: { createBoard: (grid: Grid, currentPiece: Piece
           <div className="tetris-grid-wrapper-create">
             <img className="current-text" src={current} />
             <CreateGrid state={mode === CreateMode.SET_GRID ? tool : null} setState={setTool} grid={grid} setGrid={setGrid} />
-            <PieceSelect className="current-piece" piece={currentPiece} active={mode === CreateMode.SELECT_CURRENT_PIECE} onClick={() => setTool(CreateToolType.SELECT_CURRENT_T)} />
-            <PieceSelect className="next-piece-create" piece={nextPiece} active={mode === CreateMode.SELECT_NEXT_PIECE} onClick={() => setTool(CreateToolType.SELECT_NEXT_T)} />
+            <PieceSelect className="current-piece" piece={currentPiece} active={mode === CreateMode.SELECT_CURRENT_PIECE} onClick={() => setTool(currentPiece !== null ? getCurrentToolFromPiece(currentPiece) : CreateToolType.SELECT_CURRENT_T)} />
+            <PieceSelect className="next-piece-create" piece={nextPiece} active={mode === CreateMode.SELECT_NEXT_PIECE} onClick={() => setTool(getNextToolFromPiece(nextPiece))} />
           </div>
         </Col>
         <Col xs={3}>

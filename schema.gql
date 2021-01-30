@@ -9,7 +9,7 @@ type Board {
   createdAt: DateTime!
   currentPiece: Int!
   id: ID!
-  nextPiece: Int!
+  nextPiece: Int
   possibilities: [RelatedPossibility!]!
   votes: Int!
 }
@@ -17,7 +17,7 @@ type Board {
 input BoardInput {
   board: [[Int!]!]!
   currentPiece: Int!
-  nextPiece: Int!
+  nextPiece: Int
 }
 
 """Block Co-ordinate"""

@@ -23,10 +23,14 @@ export enum CreateToolType {
   SELECT_NEXT_Z,
   SELECT_NEXT_J,
   SELECT_NEXT_L,
+  SELECT_NEXT_NONE,
 };
 
-const getPieceContent = (piece: Piece) => ({ icon: <TetrisGrid grid={getPieceGrid(piece)} blockSizeInRem={1} hideTopTwoRows={false} transparentEmptyBlocks />, label: '' });
-const mapTypeToContent = (type: CreateToolType): { icon: JSX.Element, label: string } => {
+const getPieceContent = (piece: Piece | null) => ({
+  icon: piece !== null ? <TetrisGrid grid={getPieceGrid(piece)} blockSizeInRem={1} hideTopTwoRows={false} transparentEmptyBlocks /> : null,
+  label: piece !== null ? '' : 'None'
+});
+const mapTypeToContent = (type: CreateToolType): { icon: JSX.Element | null, label: string } => {
   switch (type) {
     case CreateToolType.ADD_COLUMNS:
       const columnsGrid = [
@@ -58,6 +62,8 @@ const mapTypeToContent = (type: CreateToolType): { icon: JSX.Element, label: str
       return getPieceContent(Piece.J);
     case CreateToolType.SELECT_CURRENT_L:
       return getPieceContent(Piece.L);
+    case CreateToolType.SELECT_NEXT_NONE:
+      return getPieceContent(null);
     case CreateToolType.SELECT_NEXT_T:
       return getPieceContent(Piece.T);
     case CreateToolType.SELECT_NEXT_I:

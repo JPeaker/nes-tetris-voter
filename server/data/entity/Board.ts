@@ -18,9 +18,9 @@ export class Board extends BaseEntity {
     @Column('int')
     currentPiece!: Piece;
 
-    @Field(() => Int)
-    @Column('int')
-    nextPiece!: Piece;
+    @Field(() => Int, { nullable: true })
+    @Column('int', { nullable: true })
+    nextPiece!: Piece | null;
 
     @OneToMany(() => RelatedPossibility, possibility => possibility.board, { eager: true })
     possibilities!: RelatedPossibility[];

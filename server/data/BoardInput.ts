@@ -10,6 +10,6 @@ export class BoardInput implements Partial<Board> {
     @Field(() => Int)
     currentPiece!: Piece;
 
-    @Field(() => Int)
-    nextPiece!: Piece;
+    @Field(() => Int, { nullable: true })
+    nextPiece!: Piece | null;
 }
