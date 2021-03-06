@@ -15,6 +15,7 @@ export default ({ show = false, hide, submit }: { show?: boolean, hide: () => vo
   const [image, setImage] = useState<string | null>();
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+  const [aspect, setAspect] = useState(0.5);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
   const [grid, setGrid] = useState<Grid>(emptyGrid);
   const [canUpdateGrid, setCanUpdateGrid] = useState<boolean>(true);
@@ -63,7 +64,15 @@ export default ({ show = false, hide, submit }: { show?: boolean, hide: () => vo
     if (blob !== null) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        setImage(event.target!.result as string);
+        const imageString = event.target!.result as string;
+
+        const img = new Image();
+        img.onload = () => {
+          setAspect(img.width / img.height);
+        };
+        img.src = imageString!;
+
+        setImage(imageString);
         setCropping(true);
       };
       reader.readAsDataURL(blob);
@@ -126,7 +135,7 @@ export default ({ show = false, hide, submit }: { show?: boolean, hide: () => vo
                     image={image || undefined}
                     crop={crop}
                     zoom={zoom}
-                    aspect={0.5}
+                    aspect={aspect}
                     onCropChange={setCrop}
                     onCropComplete={onCropComplete}
                     onZoomChange={setZoom}
@@ -147,6 +156,10 @@ export default ({ show = false, hide, submit }: { show?: boolean, hide: () => vo
             <div style={{ display: 'inline-block' }}>
               <h6 className="zoom-title">Zoom:</h6>
               <Slider disabled={!cropping} min={0.75} max={4} step={0.01} value={zoom} onChange={event => setZoom(parseFloat(event.target.value))} />
+            </div>
+            <div style={{ display: 'inline-block' }}>
+              <h6 className="zoom-title">Aspect:</h6>
+              <Slider disabled={!cropping} min={0.3} max={0.8} step={0.01} value={aspect} onChange={event => setAspect(parseFloat(event.target.value))} />
             </div>
           </Col>
           <Col xs={4} className="text-right pr-0">
